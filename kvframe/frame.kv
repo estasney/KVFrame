@@ -1,0 +1,52 @@
+SplashScreen
+
+<SplashScreen@BoxLayout>:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: (0.063, 0.478, 0.69)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    AnchorLayout:
+        anchor_x: 'center'
+        size: self.size
+
+        GridLayout:
+            cols:1
+            rows:3
+            padding:30
+            spacing:15
+
+            Image:
+                source: "/home/eric/PycharmProjects/KVFrame/kvframe/resources/images/logo.png"
+                height: "300dp"
+                size_hint_y: None
+
+            AnchorLayout:
+                anchor_y: 'center'
+
+                GridLayout:
+                    cols: 1
+                    rows: 2
+                    spacing: 0
+
+                    Label:
+                        text: "SoftwareApp"
+                        font_size: 60
+                        pos_hint_y: 1
+                        color: 0.09, 0.129, 0.129, 1
+
+                    Label:
+                        text: "v1"
+                        font_size: 30
+                        pos_hint_y: 0.5
+                        color: 0.09, 0.129, 0.129, 1
+
+
+
+
+
+
+
+
