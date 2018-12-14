@@ -1,6 +1,6 @@
 SplashScreen
 
-<SplashScreen@BoxLayout>:
+<SplashScreen>:
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -16,7 +16,7 @@ SplashScreen
         FloatLayout:
 
             Image:
-                source: app.icon_path
+                source: root.icon_path
                 size_hint: 0.4, 0.4
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
