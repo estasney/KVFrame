@@ -10,7 +10,6 @@ class SplashScreen(BoxLayout):
 
     icon_path = os.path.realpath("resources/images/logo.png")
 
-
 class FrameApp(App):
     pass
 
