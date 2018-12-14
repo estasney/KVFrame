@@ -11,37 +11,38 @@ SplashScreen
     AnchorLayout:
         anchor_x: 'center'
         size: self.size
+        pos: self.pos
 
-        GridLayout:
-            cols:1
-            rows:3
-            padding:30
-            spacing:15
+        FloatLayout:
 
             Image:
-                source: "/home/eric/PycharmProjects/KVFrame/kvframe/resources/images/logo.png"
-                height: "300dp"
-                size_hint_y: None
+                source: app.icon_path
+                size_hint: 0.4, 0.4
+                pos_hint: {'center_x': 0.5, 'top': 0.95}
 
-            AnchorLayout:
-                anchor_y: 'center'
+            Button:
+                text: "Begin"
+                size_hint: 0.3, 0.1
+                pos_hint: {'center_x': 0.5, 'top': 0.5}
 
-                GridLayout:
-                    cols: 1
-                    rows: 2
-                    spacing: 0
 
-                    Label:
-                        text: "SoftwareApp"
-                        font_size: 60
-                        pos_hint_y: 1
-                        color: 0.09, 0.129, 0.129, 1
+            Label:
+                text: "SoftwareApp"
+                font_size: 40
+                pos_hint: {'center_x': 0.5, 'top': 0.3}
+                size_hint: 0.3, 0.3
+                color: 0.09, 0.129, 0.129, 1
 
-                    Label:
-                        text: "v1"
-                        font_size: 30
-                        pos_hint_y: 0.5
-                        color: 0.09, 0.129, 0.129, 1
+            Label:
+                text: "v1"
+                font_size: 20
+                pos_hint: {'center_x': 0.5, 'top': 0.25}
+                size_hint: 0.3, 0.3
+                color: 0.09, 0.129, 0.129, 1
+
+
+
+
 
 
 
