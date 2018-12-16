@@ -2,8 +2,11 @@ from kivy.app import App
 from kivy.config import Config
 import os
 from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import StringProperty
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.clock import Clock
+from datetime import datetime
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '600')
 
@@ -17,11 +20,20 @@ class SplashScreen(Screen):
 class ScreenManagement(ScreenManager):
     pass
 
-presentation = Builder.load_file("main.kv")
 
 class MainApp(App):
+
+    clock_time = StringProperty()
+
+    def get_time(self, *args, **kwargs):
+        self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
+
     def build(self):
+        self.get_time()
+        Clock.schedule_interval(self.get_time, 0.1)
+        presentation = Builder.load_file("main.kv")
         return presentation
 
 if __name__ == "__main__":
+    x = MainApp()
     MainApp().run()
