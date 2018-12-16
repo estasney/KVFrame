@@ -8,8 +8,39 @@ ScreenManagement:
 <MainScreen>:
     name: 'main'
 
-    Label:
-        text: app.clock_time
+    GridLayout:
+        cols:2
+        rows:2
+
+        Label:
+            text: app.clock_time
+
+        Holder:
+        Holder:
+        Holder:
+
+<Holder>:
+    AnchorLayout:
+        anchor_x: 'center'
+        size: self.size
+        pos: self.pos
+
+        FloatLayout:
+
+            Label:
+                text: "Holder"
+
+                halign: 'center'
+                pos_hint: {'center_x': 0.5, 'top': 0.45}
+                size_hint: 0.3, 0.3
+
+
+
+
+
+
+
+
 
 
 <SplashScreen>:

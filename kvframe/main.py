@@ -20,6 +20,9 @@ class SplashScreen(Screen):
 class ScreenManagement(ScreenManager):
     pass
 
+class Holder(BoxLayout):
+    pass
+
 
 class MainApp(App):
 
@@ -31,9 +34,9 @@ class MainApp(App):
     def build(self):
         self.get_time()
         Clock.schedule_interval(self.get_time, 0.1)
-        presentation = Builder.load_file("main.kv")
-        return presentation
+
+
 
 if __name__ == "__main__":
-    x = MainApp()
+
     MainApp().run()
