@@ -1,6 +1,19 @@
-SplashScreen
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+ScreenManagement:
+    transition: FadeTransition()
+    SplashScreen:
+    MainScreen:
+
+<MainScreen>:
+    name: 'main'
+
+    Label:
+        text: "This is the main screen"
+
 
 <SplashScreen>:
+    name: 'splash'
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -24,6 +37,7 @@ SplashScreen
                 text: "Begin"
                 size_hint: 0.3, 0.1
                 pos_hint: {'center_x': 0.5, 'top': 0.5}
+                on_release: app.root.current = 'main'
 
 
             Label:
