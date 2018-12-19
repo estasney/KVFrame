@@ -1,4 +1,5 @@
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import ActionSeparator kivy.uix.actionbar.ActionSeparator
 
 ScreenManagement:
     transition: FadeTransition()
@@ -10,25 +11,33 @@ ScreenManagement:
     ScreenNav:
     BoxLayout:
         orientation: 'vertical'
-        StatusView:
+        StatusBar:
 
-        Label:
-            text: app.clock_time
-
-
-
-
-
-
-<StatusView>:
+<StatusComponent>:
     size: self.size
     pos: self.pos
-    cols: 2
-    Label:
-        text: "Scraper"
+    orientation: 'horizontal'
+
+
+
+
+<StatusBar>:
+    canvas.before:
+        Color:
+            rgb: (0.996, 0.259, 0.059)
+    rows: 1
+    orientation: 'horizontal'
+    size: self.pos
+    pos: self.pos
+    StatusComponent:
         size_hint_x: 0.2
-        font_size: 20
-    Switch:
+        Label:
+            text: "Scraper"
+            font_size: 20
+        Label:
+            text: "Online"
+            font_size: 20
+
 
 
 

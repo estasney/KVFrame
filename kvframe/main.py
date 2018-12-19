@@ -13,7 +13,6 @@ from datetime import datetime
 from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.lang import Builder
 from kivy.vector import Vector
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '600')
@@ -34,7 +33,10 @@ class ScreenManagement(ScreenManager):
 class Holder(BoxLayout):
     pass
 
-class StatusView(GridLayout):
+class StatusBar(BoxLayout):
+    pass
+
+class StatusComponent(BoxLayout):
     pass
 
 class RoundedButton(ButtonBehavior, Label, Widget):
