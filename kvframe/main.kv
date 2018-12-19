@@ -7,9 +7,12 @@ ScreenManagement:
 
 <MainScreen>:
     name: 'main'
+    ScreenNav:
     GridLayout:
         cols:2
         rows:2
+
+
 
         Label:
             text: app.clock_time
@@ -17,6 +20,21 @@ ScreenManagement:
         Holder:
         Holder:
         Holder:
+
+<ScreenNav>:
+    ActionBar:
+        pos_hint: {'top': 1}
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: 'SoftwareApp'
+                with_previous: True
+            ActionOverflow:
+            ActionGroup:
+                ActionButton:
+                    text: 'New'
+                ActionButton:
+                    text: 'Load'
 
 <Holder>:
     AnchorLayout:

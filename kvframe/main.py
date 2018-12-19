@@ -3,6 +3,7 @@ from kivy.config import Config
 import os
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -18,6 +19,9 @@ Config.set('graphics', 'height', '600')
 
 
 class MainScreen(Screen):
+    pass
+
+class ScreenNav(FloatLayout):
     pass
 
 class SplashScreen(Screen):
