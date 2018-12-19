@@ -8,18 +8,29 @@ ScreenManagement:
 <MainScreen>:
     name: 'main'
     ScreenNav:
-    GridLayout:
-        cols:2
-        rows:2
-
-
+    BoxLayout:
+        orientation: 'vertical'
+        StatusView:
 
         Label:
             text: app.clock_time
 
-        Holder:
-        Holder:
-        Holder:
+
+
+
+
+
+<StatusView>:
+    size: self.size
+    pos: self.pos
+    cols: 2
+    Label:
+        text: "Scraper"
+        size_hint_x: 0.2
+        font_size: 20
+    Switch:
+
+
 
 <ScreenNav>:
     ActionBar:

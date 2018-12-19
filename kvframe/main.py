@@ -4,6 +4,7 @@ import os
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.properties import StringProperty
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -31,6 +32,9 @@ class ScreenManagement(ScreenManager):
     pass
 
 class Holder(BoxLayout):
+    pass
+
+class StatusView(GridLayout):
     pass
 
 class RoundedButton(ButtonBehavior, Label, Widget):
