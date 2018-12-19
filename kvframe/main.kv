@@ -7,7 +7,6 @@ ScreenManagement:
 
 <MainScreen>:
     name: 'main'
-
     GridLayout:
         cols:2
         rows:2
@@ -34,13 +33,20 @@ ScreenManagement:
                 pos_hint: {'center_x': 0.5, 'top': 0.45}
                 size_hint: 0.3, 0.3
 
+<RoundedButton>:
+    canvas.before:
+        Color:
+            rgb: (0.996, 0.259, 0.059)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
 
 
 
-
-
-
-
+<WelcomeButton>:
+    on_release: app.root.current = 'main'
+    text: 'Begin'
+    font_size: 18
 
 
 <SplashScreen>:
@@ -64,12 +70,9 @@ ScreenManagement:
                 size_hint: 0.4, 0.4
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
-            Button:
-                text: "Begin"
-                size_hint: 0.3, 0.1
+            WelcomeButton:
+                size_hint: 0.1, 0.1
                 pos_hint: {'center_x': 0.5, 'top': 0.5}
-                on_release: app.root.current = 'main'
-
 
             Label:
                 text: "[size=40]SoftwareApp[/size]\nV1"
