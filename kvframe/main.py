@@ -8,7 +8,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, BooleanProperty
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.clock import Clock
@@ -43,7 +43,9 @@ class StatusComponent(BoxLayout):
 class RoundedButton(Button):
     UNPRESSED_COLOR = get_color_from_hex("#ff000d")
     PRESSED_COLOR = get_color_from_hex("#be0119")
+    DISABLED_COLOR = get_color_from_hex("#9e9ea2")
     FONT_COLOR = get_color_from_hex("#ffffff")
+
     def collide_point(self, x, y):
         return Vector(x, y).distance(self.center) <= self.width / 2
 
