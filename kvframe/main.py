@@ -3,6 +3,7 @@ from kivy.config import Config
 import os
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
+from kivy.utils import get_color_from_hex
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
@@ -13,6 +14,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.clock import Clock
 from datetime import datetime
 from kivy.uix.behaviors.button import ButtonBehavior
+from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.vector import Vector
@@ -38,15 +40,18 @@ class StatusBar(BoxLayout):
 class StatusComponent(BoxLayout):
     pass
 
-class RoundedButton(ButtonBehavior, Label):
+class RoundedButton(Button):
+    UNPRESSED_COLOR = get_color_from_hex("#ff000d")
+    PRESSED_COLOR = get_color_from_hex("#be0119")
+    FONT_COLOR = get_color_from_hex("#ffffff")
     def collide_point(self, x, y):
         return Vector(x, y).distance(self.center) <= self.width / 2
 
-class ButtonGreen(AnchorLayout):
-    def get_up(self):
-        return os.path.realpath("resources/images/light_green.png")
-    def get_down(self):
-        return os.path.realpath("resources/images/dark_green.png")
+class GreenButton(RoundedButton):
+    UNPRESSED_COLOR = get_color_from_hex("#21fc0d")
+    PRESSED_COLOR = get_color_from_hex("#048243")
+    FONT_COLOR = get_color_from_hex("#000000")
+
 
 class WelcomeButton(RoundedButton):
     pass

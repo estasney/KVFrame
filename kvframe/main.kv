@@ -29,7 +29,8 @@ ScreenManagement:
             anchor_y: 'center'
             anchor_x: 'center'
 
-            ButtonGreen:
+            GreenButton:
+                text: "Launch"
                 size_hint: 0.3, 0.3
 
 
@@ -86,27 +87,18 @@ ScreenManagement:
                 ActionButton:
                     text: 'Load'
 
-<ButtonGreen>
-    anchor_x: 'center'
-    anchor_y: 'center'
-    Button:
-        background_normal: root.get_up()
-        background_down: root.get_down()
-        border: 90, 90, 90, 90
-
-
-
-
-
-
-
-<WelcomeButton>:
+<RoundedButton>:
+    background_color: 0,0,0,0
     canvas.before:
         Color:
-            rgb: (0.996, 0.259, 0.059)
+            rgb: self.UNPRESSED_COLOR if self.state == 'normal' else self.PRESSED_COLOR
         RoundedRectangle:
             pos: self.pos
             size: self.size
+            radius: [10,]
+    color: self.FONT_COLOR
+
+<WelcomeButton>:
     on_release: app.root.current = 'main'
     text: 'Begin'
     font_size: 18
