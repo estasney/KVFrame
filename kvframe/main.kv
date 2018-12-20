@@ -8,23 +8,52 @@ ScreenManagement:
 
 <MainScreen>:
     name: 'main'
-    ScreenNav:
     BoxLayout:
         orientation: 'vertical'
+        ScreenNav:
+            size_hint_y: 0.1
+            pos_hint: {'top': 0}
+        MainActions:
+            size_hint_y: 0.8
         StatusBar:
+            size_hint_y: 0.1
+            pos_hint: {'top': 1}
+
+<MainActions@Accordion>:
+    size: self.size
+    pos: self.pos
+    orientation: 'vertical'
+    AccordionItem:
+        title: "Scraper"
+        AnchorLayout:
+            anchor_y: 'center'
+            anchor_x: 'center'
+
+            ButtonGreen:
+                size_hint: 0.3, 0.3
+
+
+
+
+    AccordionItem:
+        title: "Navigation"
+    AccordionItem:
+        title: "Extraction"
+    AccordionItem:
+        title: "Steps"
 
 <StatusComponent>:
     size: self.size
     pos: self.pos
     orientation: 'horizontal'
 
-
-
-
 <StatusBar>:
     canvas.before:
         Color:
-            rgb: (0.996, 0.259, 0.059)
+            rgb: (0.1, 0.1, 0.1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
     rows: 1
     orientation: 'horizontal'
     size: self.pos
@@ -32,14 +61,15 @@ ScreenManagement:
     StatusComponent:
         size_hint_x: 0.2
         Label:
-            text: "Scraper"
+            text: app.clock_time
             font_size: 20
+    VSeparator:
+    StatusComponent:
+        size_hint_x: 0.2
         Label:
-            text: "Online"
+            text: "Scraper: [color=#fe420f]Offline[/color]"
+            markup: True
             font_size: 20
-
-
-
 
 <ScreenNav>:
     ActionBar:
@@ -56,32 +86,27 @@ ScreenManagement:
                 ActionButton:
                     text: 'Load'
 
-<Holder>:
-    AnchorLayout:
-        anchor_x: 'center'
-        size: self.size
-        pos: self.pos
+<ButtonGreen>
+    anchor_x: 'center'
+    anchor_y: 'center'
+    Button:
+        background_normal: root.get_up()
+        background_down: root.get_down()
+        border: 90, 90, 90, 90
 
-        FloatLayout:
 
-            Label:
-                text: "Holder"
 
-                halign: 'center'
-                pos_hint: {'center_x': 0.5, 'top': 0.45}
-                size_hint: 0.3, 0.3
 
-<RoundedButton>:
+
+
+
+<WelcomeButton>:
     canvas.before:
         Color:
             rgb: (0.996, 0.259, 0.059)
         RoundedRectangle:
             pos: self.pos
             size: self.size
-
-
-
-<WelcomeButton>:
     on_release: app.root.current = 'main'
     text: 'Begin'
     font_size: 18
@@ -121,7 +146,21 @@ ScreenManagement:
                 color: 0.09, 0.129, 0.129, 1
 
 
+<Separator@Widget>:
+    canvas:
+        Color:
+            rgba: 0.365, 0.365, 0.365, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
+<HSeparator@Separator>:
+    size_hint_y: None
+    height: dp(2)
+
+<VSeparator@Separator>:
+    size_hint_x: None
+    width: dp(2)
 
 
 

@@ -2,10 +2,12 @@ from kivy.app import App
 from kivy.config import Config
 import os
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
-from kivy.properties import StringProperty
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.properties import StringProperty, ListProperty
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.clock import Clock
@@ -30,18 +32,21 @@ class SplashScreen(Screen):
 class ScreenManagement(ScreenManager):
     pass
 
-class Holder(BoxLayout):
-    pass
-
 class StatusBar(BoxLayout):
     pass
 
 class StatusComponent(BoxLayout):
     pass
 
-class RoundedButton(ButtonBehavior, Label, Widget):
+class RoundedButton(ButtonBehavior, Label):
     def collide_point(self, x, y):
         return Vector(x, y).distance(self.center) <= self.width / 2
+
+class ButtonGreen(AnchorLayout):
+    def get_up(self):
+        return os.path.realpath("resources/images/light_green.png")
+    def get_down(self):
+        return os.path.realpath("resources/images/dark_green.png")
 
 class WelcomeButton(RoundedButton):
     pass
@@ -51,6 +56,7 @@ class WelcomeButton(RoundedButton):
 class MainApp(App):
 
     clock_time = StringProperty()
+    resource_dir = StringProperty()
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
