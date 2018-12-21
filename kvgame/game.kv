@@ -1,0 +1,30 @@
+<KeyIcon>:
+    source: self.src_normal
+    pos: self.pos
+    size: self.size
+    on_press: self.callback()
+
+<StopIcon>:
+    source: self.src_normal
+    pos: self.pos
+    size: self.size
+    on_press: self.callback()
+
+<GoIcon>
+    source: self.src_normal
+    pos: self.pos
+    size: self.size
+    on_press: self.callback()
+
+
+<IconHolder>:
+    orientation: 'horizontal'
+    rows: 2
+    cols: 3
+    spacing: 10
+    padding:20
+
+IconHolder:
+    GoIcon:
+    StopIcon:
+    KeyIcon:
