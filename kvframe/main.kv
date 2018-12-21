@@ -25,20 +25,48 @@ ScreenManagement:
     orientation: 'vertical'
     AccordionItem:
         title: "Scraper"
-        AnchorLayout:
-            anchor_y: 'center'
-            anchor_x: 'center'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 20
 
             GreenButton:
                 text: "Launch"
-                size_hint: 0.3, 0.3
+                size_hint: 0.3, 0.1
+                pos_hint: {'top': 1, 'x': 0.4}
+
+            RedButton:
+                text: "Shutdown"
+                size_hint: 0.3, 0.1
+                pos_hint: {'top': 1, 'x': 0.6}
                 disabled: True
-
-
-
-
     AccordionItem:
-        title: "Navigation"
+        title: "Selector"
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 20
+
+            Label:
+                text: "Selector"
+                size_hint: 0.1, 0.1
+                pos_hint: {'top': 1}
+            TextInput:
+                text: ""
+                multiline: False
+                size_hint: 0.8, 0.1
+                pos_hint: {'top': 1}
+            GreenButton:
+                text: "Preview"
+                size_hint: 0.15, 0.1
+                pos_hint: {'top': 1}
+            GreenButton:
+                text: "Select"
+                size_hint: 0.15, 0.1
+                pos_hint: {'top': 1}
+
+
     AccordionItem:
         title: "Extraction"
     AccordionItem:
@@ -100,12 +128,6 @@ ScreenManagement:
     color: self.FONT_COLOR
     font_size: sp(20)
 
-<WelcomeButton>:
-    on_release: app.root.current = 'main'
-    text: 'Begin'
-
-
-
 <SplashScreen>:
     name: 'splash'
     orientation: 'vertical'
@@ -127,7 +149,9 @@ ScreenManagement:
                 size_hint: 0.4, 0.4
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
-            WelcomeButton:
+            RedButton:
+                on_release: app.root.current = 'main'
+                text: 'Begin'
                 size_hint: 0.1, 0.1
                 pos_hint: {'center_x': 0.5, 'top': 0.5}
 
