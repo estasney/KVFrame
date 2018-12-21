@@ -13,14 +13,12 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.clock import Clock
 from datetime import datetime
-from kivy.uix.behaviors.button import ButtonBehavior
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.widget import Widget
-from kivy.vector import Vector
+from kvframe.buttons import *
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '600')
 
+
+Builder.load_file("buttons.kv")
 
 class MainScreen(Screen):
     pass
@@ -39,29 +37,6 @@ class StatusBar(BoxLayout):
 
 class StatusComponent(BoxLayout):
     pass
-
-class RoundedButton(Button):
-    DISABLED_COLOR = get_color_from_hex("#9e9ea2")
-    FONT_COLOR = get_color_from_hex("#ffffff")
-
-    def collide_point(self, x, y):
-        return Vector(x, y).distance(self.center) <= self.width / 2
-
-class RedButton(RoundedButton):
-    UNPRESSED_COLOR = get_color_from_hex("#ff000d")
-    PRESSED_COLOR = get_color_from_hex("#be0119")
-
-
-class GreenButton(RoundedButton):
-    UNPRESSED_COLOR = get_color_from_hex("#21fc0d")
-    PRESSED_COLOR = get_color_from_hex("#048243")
-    FONT_COLOR = get_color_from_hex("#000000")
-
-
-class WelcomeButton(RoundedButton):
-    pass
-
-
 
 class MainApp(App):
 
