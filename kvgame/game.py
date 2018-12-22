@@ -49,22 +49,25 @@ class GoIcon(Icon):
 
 
 class KeyIcon(Icon):
-    src_normal = os.path.realpath("resources/images/key.png")
-    src_pressed = os.path.realpath("resources/images/key_pressed.png")
+    src_normal = os.path.realpath("resources/images/key_off.png")
+    src_pressed = os.path.realpath("resources/images/key_on.png")
     sound_src = os.path.realpath("resources/audio/engine_start.wav")
 
     looping_audio = None
     looping_src = os.path.realpath("resources/audio/idle.wav")
 
+    def toggle_inition(self):
+        if self.source == self.src_normal:
+            self.source = self.src_pressed
+            self.play_sound()
+        else:
+            self.source = self.src_normal
+        self.toggle_looping()
+
+
     def play_sound(self, *args, **kwargs):
-        if not getattr(self, 'sound_src', None):
-            Clock.schedule_once(partial(self.callback, img_src=self.src_normal), 1)
-            return
-        if not kwargs:
-            sound = SoundLoader.load(self.sound_src)
-            sound.play()
-            Clock.schedule_once(partial(self.callback, img_src=self.src_normal), sound.length)
-            self.toggle_looping()
+        sound = SoundLoader.load(self.sound_src)
+        sound.play()
 
 
     def toggle_looping(self):
