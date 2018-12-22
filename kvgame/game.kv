@@ -25,6 +25,14 @@
     padding:20
 
 IconHolder:
-    GoIcon:
-    StopIcon:
     KeyIcon:
+        pos_hint: {'x': 0.7, 'top': 0.5}
+        size_hint: 0.3, 0.3
+    SpeedSlider:
+        pos_hint: {'x': 0.4, 'top': 0.5}
+        size_hint: 0.3, 0.4
+        orientation: 'vertical'
+        cursor_height: 48
+        cursor_width: 400
+        cursor_image: self.cursor_src
+        on_touch_move: self.callback()

@@ -5,13 +5,15 @@ from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 import os
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.properties import BooleanProperty
+from kivy.uix.slider import Slider
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '600')
 from functools import partial
 
-class IconHolder(GridLayout):
+class IconHolder(FloatLayout):
     pass
 
 
@@ -37,15 +39,56 @@ class Icon(ButtonBehavior, Image):
             Clock.schedule_once(partial(self.callback, img_src=self.src_normal), sound.length)
 
 
-class StopIcon(Icon):
-    src_normal = os.path.realpath("resources/images/stopsign.png")
-    src_pressed = os.path.realpath("resources/images/stopsign_pressed.png")
-    sound_src = os.path.realpath("resources/audio/skid.wav")
+class SpeedSlider(Slider):
+    cursor_src = os.path.realpath('resources/images/slider_handle.png')
+    sound_increase_src = os.path.realpath('resources/audio/engine_accelerate.wav')
+    sound_decrease_src = os.path.realpath('resources/audio/engine_deaccelerate.wav')
+    last_value = 0
+    sound_increase = None
+    sound_decrease = None
 
-class GoIcon(Icon):
-    src_normal = os.path.realpath("resources/images/go.png")
-    src_pressed = os.path.realpath("resources/images/go_pressed.png")
-    sound_src = os.path.realpath("resources/audio/go.wav")
+    def callback(self, *args, **kwargs):
+        # is movement increasing or decreasing?
+        if self.value > self.last_value:
+            self.last_value = self.value
+            self.increasing()
+        elif self.value < self.last_value:
+            self.last_value = self.value
+            self.decreasing()
+
+    def increasing(self):
+        if not self.sound_increase:
+            self.sound_increase = SoundLoader.load(self.sound_increase_src)
+        if not self.sound_decrease:
+            self.sound_decrease = SoundLoader.load(self.sound_decrease_src)
+
+        if not App.get_running_app().sound_enabled:
+            return
+
+        if self.sound_increase.state == 'play':
+            return
+        if self.sound_decrease.state == 'play':
+            self.sound_decrease.stop()
+        self.sound_increase.play()
+
+
+
+    def decreasing(self):
+        if not self.sound_increase:
+            self.sound_increase = SoundLoader.load(self.sound_increase_src)
+        if not self.sound_decrease:
+            self.sound_decrease = SoundLoader.load(self.sound_decrease_src)
+
+        if not App.get_running_app().sound_enabled:
+            return
+
+        if self.sound_decrease.state == 'play':
+            return
+        if self.sound_increase.state == 'play':
+            self.sound_increase.stop()
+        self.sound_decrease.play()
+
+
 
 
 class KeyIcon(Icon):
@@ -59,15 +102,18 @@ class KeyIcon(Icon):
     def toggle_inition(self):
         if self.source == self.src_normal:
             self.source = self.src_pressed
+            App.get_running_app().sound_enabled = True
             self.play_sound()
         else:
             self.source = self.src_normal
+            App.get_running_app().sound_enabled = False
         self.toggle_looping()
 
 
     def play_sound(self, *args, **kwargs):
         sound = SoundLoader.load(self.sound_src)
         sound.play()
+
 
 
     def toggle_looping(self):
@@ -82,11 +128,9 @@ class KeyIcon(Icon):
         self.looping_audio.play()
 
 
-
-
-
 class GameApp(App):
-    pass
+    sound_enabled = BooleanProperty(default=False)
+
 
 if __name__ == "__main__":
 
