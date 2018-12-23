@@ -2,7 +2,7 @@
     source: self.src_normal
     pos: self.pos
     size: self.size
-    on_press: self.toggle_inition()
+    on_press: app.sound(key="KeyIcon_ignition", callback=self.callback, global_toggle=True)
 
 <StopIcon>:
     source: self.src_normal
