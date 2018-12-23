@@ -19,6 +19,9 @@ class GameApp(App):
     sound_enabled = BooleanProperty(False)
     sounds = {}
 
+    def get_path(self, fp):
+        return os.path.realpath(fp)
+
     def global_check(self, toggle=None):
             if not toggle:
                 return self.sound_enabled
@@ -32,7 +35,6 @@ class GameApp(App):
 
 
     def stop_all_sounds(self):
-        print("Stopping Sounds")
         [s.stop() for s in list(self.sounds.values())]
 
 
@@ -43,7 +45,6 @@ class GameApp(App):
         sound_key = kwargs['key']
 
         if not do_sound:
-            print("Not playing sound")
             if widget_callback:
                 widget_callback()
             return None

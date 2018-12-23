@@ -18,19 +18,19 @@
 
 
 <IconHolder>:
-    orientation: 'horizontal'
-    rows: 2
-    cols: 3
-    spacing: 10
-    padding:20
+
 
 IconHolder:
+    Image:
+        source: app.get_path("resources/images/dump_truck_front.png")
+
+        size_hint: 0.5, 0.5
     KeyIcon:
-        pos_hint: {'x': 0.7, 'top': 0.5}
-        size_hint: 0.3, 0.3
+        pos_hint: {'x': 0.7, 'top': 0.4}
+        size_hint: 0.2, 0.2
     SpeedSlider:
-        pos_hint: {'x': 0.4, 'top': 0.5}
-        size_hint: 0.3, 0.4
+        pos_hint: {'x': 0.5, 'top': 0.9}
+        size_hint: 0.4, 0.4
         orientation: 'vertical'
         cursor_height: 48
         cursor_width: 400
