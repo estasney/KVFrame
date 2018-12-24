@@ -84,7 +84,7 @@ class BounceGame(Widget):
         return random.choice(new_textures)
 
     def serve_ball(self, vel=(4, 0)):
-        self.ball.ball_texture_path = self.ball_textures[0]
+        self.ball.ball_texture_path = random.choice(self.ball_textures)
         self.ball.center = self.center
         self.ball.velocity = vel
 
