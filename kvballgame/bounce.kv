@@ -1,0 +1,25 @@
+
+<Ball>:
+    size: 100, 100
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: self.angle
+            axis: 0, 0, 1
+            origin: self.center
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+            texture: self.my_texture.texture
+    canvas.after:
+        PopMatrix
+
+
+
+<BounceGame>:
+    ball: ball
+    Ball:
+        id: ball
+        center: self.parent.center
+        
