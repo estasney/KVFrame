@@ -43,7 +43,6 @@ class Ball(Widget):
             self.angle += log(max([abs(self.velocity_x), abs(self.velocity_y)]))
 
 
-
     def decay(self, *args, **kwargs):
 
         self.velocity_x *= 0.9
@@ -100,6 +99,13 @@ class BounceGame(Widget):
             self.ball.velocity_x *= -1
 
     def on_touch_down(self, touch):
+        if self.ball.collide_point(touch.x, touch.y):
+            self.ball.boing()
+            do_texture_change = self.random_chance(0, 2)
+            if do_texture_change:
+                self.ball.ball_texture_path = self.find_new_texture()
+
+    def on_touch_move(self, touch):
         if self.ball.collide_point(touch.x, touch.y):
             self.ball.boing()
             do_texture_change = self.random_chance(0, 2)
