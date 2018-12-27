@@ -1,0 +1,25 @@
+
+<Plane>:
+    size: 25, 25
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: self.angle
+            axis: 0, 0, 1
+            origin: self.center
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgb: 0, 0, 0
+    canvas.after:
+        PopMatrix
+
+
+<PlaneGame>:
+    plane: plane
+    Plane:
+        id: plane
+        y: self.parent.y
+
