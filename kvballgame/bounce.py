@@ -15,6 +15,7 @@ from math import log
 import glob
 import random
 import os
+import numpy as np
 
 
 class Ball(Widget):
@@ -42,11 +43,14 @@ class Ball(Widget):
         self.reload_texture(self)
 
     def get_resultant_vector(self, touch):
-        col_vector = Vector(touch.pos) - Vector(self.center)
-        col_vector_mag = col_vector.length()
-        random_magnitude = random.randint(5, 10)
+        # get angle between self.center and touch
 
-        return random_magnitude / col_vector * col_vector_mag
+        x = np.array(touch.pos) - np.array(self.center)
+        collision_angle = np.arctan2(x[1], x[0])
+        vector_magnitude = 10
+        x_mag = np.cos(collision_angle) * vector_magnitude
+        y_mag = np.sin(collision_angle) * vector_magnitude
+        return float(-x_mag), float(-y_mag)
 
 
     def move(self):
@@ -55,7 +59,7 @@ class Ball(Widget):
 
             if self.y < self.parent.y:
                 self.pos = Vector(0, self.parent.y - self.y) + self.pos
-            if abs(self.velocity_y) < (8 * abs(self.y_decay)):
+            if abs(self.velocity_y) < (9.5 * abs(self.y_decay)):
                 self.velocity_y = 0
                 self.y_decay = 0
             else:
@@ -96,7 +100,6 @@ class Ball(Widget):
     def boing(self, touch):
 
         resultant_vector = self.get_resultant_vector(touch)
-        print(resultant_vector)
 
         self.velocity_x += resultant_vector[0]
         self.velocity_y += resultant_vector[1]
