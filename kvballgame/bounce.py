@@ -47,7 +47,7 @@ class Ball(Widget):
 
         x = np.array(touch.pos) - np.array(self.center)
         collision_angle = np.arctan2(x[1], x[0])
-        vector_magnitude = 10
+        vector_magnitude = 15
         x_mag = np.cos(collision_angle) * vector_magnitude
         y_mag = np.sin(collision_angle) * vector_magnitude
         return float(-x_mag), float(-y_mag)
@@ -59,7 +59,7 @@ class Ball(Widget):
 
             if self.y < self.parent.y:
                 self.pos = Vector(0, self.parent.y - self.y) + self.pos
-            if abs(self.velocity_y) < (9.5 * abs(self.y_decay)):
+            if abs(self.velocity_y) < (8 * abs(self.y_decay)):
                 self.velocity_y = 0
                 self.y_decay = 0
             else:
