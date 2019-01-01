@@ -1,0 +1,55 @@
+<ScraperView>:
+    title: self.TITLE
+    button1: launch_button
+    button2: shutdown_button
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 10
+        spacing: 20
+
+        GreenButton:
+            id: launch_button
+            text: "Launch"
+            size_hint: 0.3, 0.1
+            pos_hint: {'top': 1, 'x': 0.4}
+            on_release: root.launch()
+
+
+        RedButton:
+            id: shutdown_button
+            text: "Shutdown"
+            size_hint: 0.3, 0.1
+            pos_hint: {'top': 1, 'x': 0.6}
+            disabled: True
+            on_release: root.shutdown()
+
+<SelectorView>:
+    title: self.TITLE
+    disabled: app.accordions_disabled
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 10
+        spacing: 20
+
+        Label:
+            text: "Selector"
+            size_hint: 0.1, 0.1
+            pos_hint: {'top': 1}
+        TextInput:
+            text: ""
+            multiline: False
+            size_hint: 0.8, 0.1
+            pos_hint: {'top': 1}
+        GreenButton:
+            id: preview_button
+            text: "Preview"
+            size_hint: 0.15, 0.1
+            pos_hint: {'top': 1}
+            on_release: root.preview()
+        GreenButton:
+            id: select_button
+            text: "Select"
+            size_hint: 0.15, 0.1
+            pos_hint: {'top': 1}
+            on_release: root.select()

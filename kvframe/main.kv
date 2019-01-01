@@ -23,53 +23,18 @@ ScreenManagement:
     size: self.size
     pos: self.pos
     orientation: 'vertical'
-    AccordionItem:
-        title: "Scraper"
 
-        BoxLayout:
-            orientation: 'horizontal'
-            padding: 10
-            spacing: 20
+    ScraperView:
 
-            GreenButton:
-                text: "Launch"
-                size_hint: 0.3, 0.1
-                pos_hint: {'top': 1, 'x': 0.4}
-
-            RedButton:
-                text: "Shutdown"
-                size_hint: 0.3, 0.1
-                pos_hint: {'top': 1, 'x': 0.6}
-                disabled: True
-    AccordionItem:
-        title: "Selector"
-        BoxLayout:
-            orientation: 'horizontal'
-            padding: 10
-            spacing: 20
-
-            Label:
-                text: "Selector"
-                size_hint: 0.1, 0.1
-                pos_hint: {'top': 1}
-            TextInput:
-                text: ""
-                multiline: False
-                size_hint: 0.8, 0.1
-                pos_hint: {'top': 1}
-            GreenButton:
-                text: "Preview"
-                size_hint: 0.15, 0.1
-                pos_hint: {'top': 1}
-            GreenButton:
-                text: "Select"
-                size_hint: 0.15, 0.1
-                pos_hint: {'top': 1}
-
+    SelectorView:
 
     AccordionItem:
+        id: extraction_accordion
+        disabled: app.accordions_disabled
         title: "Extraction"
     AccordionItem:
+        id: steps_accordion
+        disabled: app.accordions_disabled
         title: "Steps"
 
 <StatusComponent>:
@@ -97,7 +62,7 @@ ScreenManagement:
     StatusComponent:
         size_hint_x: 0.2
         Label:
-            text: "Scraper: [color=#fe420f]Offline[/color]"
+            text: "Scraper: [color={}]{}[/color]".format(app.scraper_status_color, app.scraper_status)
             markup: True
             font_size: 20
 
@@ -107,7 +72,7 @@ ScreenManagement:
         ActionView:
             use_separator: True
             ActionPrevious:
-                title: 'SoftwareApp'
+                title: app.APP_NAME
                 with_previous: True
             ActionOverflow:
             ActionGroup:
@@ -133,7 +98,7 @@ ScreenManagement:
         FloatLayout:
 
             Image:
-                source: root.icon_path
+                source: app.APP_ICON_PATH
                 size_hint: 0.4, 0.4
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
@@ -144,7 +109,7 @@ ScreenManagement:
                 pos_hint: {'center_x': 0.5, 'top': 0.5}
 
             Label:
-                text: "[size=40]SoftwareApp[/size]\nV1"
+                text: "[size=40]{}[/size]\n{}".format(app.APP_NAME, app.APP_VERSION)
                 markup: True
                 halign: 'center'
                 pos_hint: {'center_x': 0.5, 'top': 0.45}
