@@ -3,7 +3,6 @@ import platform
 import os
 import atexit
 from datetime import datetime
-import numpy as np
 
 def enable_touch():
     os.system("xinput enable 'FT5406 memory based driver'")
@@ -25,18 +24,16 @@ from kivy.utils import get_color_from_hex
 from kivy.clock import Clock
 
 
-colors = ["#431dff", "#ffa11d", "#ff1100", "00ff44"]
-points_f = 'points.txt'
+colors = ["#431dff", "#ffa11d", "#ff1100", "#00ff44", "#de5011", "#de11c8", "#76de11"]
 
 
 class MyPaintWidget(Widget):
 
     MAX_LINES = NumericProperty(100)
-    MAX_IDLE_SECONDS = 1
-    NEW_COLOR_SECONDS = 30
-    DEMO_REFRESH_RATIO = 0.04
+    MAX_IDLE_SECONDS = 20
+    NEW_COLOR_SECONDS = 5
+    MAX_DEMO_POINTS = 2000
 
-    demo_travel = NumericProperty(0)
     demo_velocity_x = NumericProperty(0)
     demo_velocity_y = NumericProperty(0)
     demo_velocity = ReferenceListProperty(demo_velocity_x, demo_velocity_y)
@@ -57,7 +54,6 @@ class MyPaintWidget(Widget):
 
     def on_touch_move(self, touch):
         touch.ud['line'].children[2].points += [touch.x, touch.y]
-
 
     def on_touch_up(self, touch):
         self.is_drawing = False
@@ -97,18 +93,18 @@ class MyPaintWidget(Widget):
             return False
 
 
-        line = line_[0].children[2]
-        points = line.points
-
-        a = np.array(list(zip(points[::2], points[1::2])))
-        _, point_counts = np.unique(a, return_counts=True, axis=0)
-        n_overlap = np.where(point_counts > 1)[0].size
-        r_overlap = n_overlap / a.size
-        print(r_overlap)
-        if r_overlap >= self.DEMO_REFRESH_RATIO:
+        n_points = sum([len(x.children[-1].points) for x in line_])
+        if n_points >= self.MAX_DEMO_POINTS:
             self.remove_demo_line()
             self.demo_factory()
             return False
+
+        line_color = line_[-1].children[-3]
+        line = line_[-1].children[-1]
+        if line_color.rgb != get_color_from_hex(self.current_color):
+            new_line = self.make_demo_line(line.points[-2], line.points[-1])
+            self.canvas.add(new_line)
+
 
     def update_demo_line(self, *args):
         if self.is_demo_mode is False:
@@ -117,21 +113,25 @@ class MyPaintWidget(Widget):
         line_ = self.canvas.get_group('demo')
         if not line_:
             return False
-        line = line_[0].children[2]
+        line = line_[-1].children[-1]
 
         line_x, line_y = line.points[-2], line.points[-1]
 
         if line_y <= self.y:
-            self.demo_velocity_y *= -1
+            if self.demo_velocity_y < 0:
+                self.demo_velocity_y *= -1
 
         if line_y >= self.top:
-            self.demo_velocity_y *= -1
+            if self.demo_velocity_y > 0:
+                self.demo_velocity_y *= -1
 
         if line_x <= self.x:
-            self.demo_velocity_x *= -1
+            if self.demo_velocity_x < 0:
+                self.demo_velocity_x *= -1
 
         if line_x >= self.width:
-            self.demo_velocity_x *= -1
+            if self.demo_velocity_x > 0:
+                self.demo_velocity_x *= -1
 
         line.points += [(line_x + self.demo_velocity_x), (line_y + self.demo_velocity_y)]
 
