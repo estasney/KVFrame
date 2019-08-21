@@ -1,0 +1,11 @@
+<RoundedButton>:
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgb: self.DISABLED_COLOR if self.disabled else self.UNPRESSED_COLOR if self.state == 'normal' else self.PRESSED_COLOR
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]
+    color: self.FONT_COLOR
+    font_size: sp(20)

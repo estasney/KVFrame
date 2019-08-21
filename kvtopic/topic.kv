@@ -1,0 +1,68 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import ActionSeparator kivy.uix.actionbar.ActionSeparator
+#:import Factory kivy.factory.Factory
+
+ScreenManagement:
+    transition: FadeTransition()
+    SplashScreen:
+
+<SplashScreen>:
+    name: 'splash'
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: (0.063, 0.478, 0.69)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    AnchorLayout:
+        anchor_x: 'center'
+        size: self.size
+        pos: self.pos
+
+        FloatLayout:
+
+            Image:
+                source: app.APP_ICON_PATH
+                size_hint: 0.4, 0.4
+                pos_hint: {'center_x': 0.5, 'top': 0.95}
+
+            RedButton:
+                on_release: app.root.current = 'actions'
+                text: 'Begin'
+                size_hint: 0.1, 0.1
+                pos_hint: {'center_x': 0.5, 'top': 0.5}
+
+            Label:
+                text: "[size=40]{}[/size]\n{}".format(app.APP_NAME, app.APP_VERSION)
+                markup: True
+                halign: 'center'
+                pos_hint: {'center_x': 0.5, 'top': 0.45}
+                size_hint: 0.3, 0.3
+                color: 0.09, 0.129, 0.129, 1
+
+
+<Separator@Widget>:
+    canvas:
+        Color:
+            rgba: 0.365, 0.365, 0.365, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<HSeparator@Separator>:
+    size_hint_y: None
+    height: dp(2)
+
+<VSeparator@Separator>:
+    size_hint_x: None
+    width: dp(2)
+
+
+
+
+
+
+
+
+
