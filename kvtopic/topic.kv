@@ -4,7 +4,122 @@
 
 ScreenManagement:
     transition: FadeTransition()
+    OptionsScreen:
     SplashScreen:
+    DocumentScreen:
+
+
+<OptionsScreen>:
+    name: 'options'
+    canvas.before:
+        Color:
+            rgba: (.8, 0.8, 0.8, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        Filters:
+            size_hint: 1, 0.7
+        StatusBar:
+            size_hint: 1, 0.1
+            pos_hint: {'top': 1}
+
+<Filters@BoxLayout>:
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 15
+        spacing: 5
+        size_hint: 1, 0.1
+        Spinner:
+            id: input_job_family
+            text: "All Job Families"
+            values: app.job_families
+            size_hint: 0.5, 1
+            on_text: app.values_filter(value=self.text, col='Job_Family')
+
+        Spinner:
+            id: input_job_title
+            text: "All Job Titles"
+            values: app.job_titles
+            size_hint: 0.5, 1
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.1
+        spacing: 20
+        padding: 15
+        Spinner:
+            id: input_topic_name
+            text: "All Topics"
+            values: app.topic_names
+            size_hint: 0.5, 1
+    HSeparator:
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.2
+        spacing: 5
+        padding: 15
+        TextInput:
+            id: input_word_search
+            hint_text: "Filter by word(s). Separate words with commas: word, phrase phrase, word"
+            size_hint: 0.5, 1
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.05
+        spacing: 5
+        padding: 2
+        Label:
+            text: "Match ALL Words" if input_word_boolean.active else "Match ANY Word"
+            color: (0, 0, 0, 1)
+        Switch:
+            id: input_word_boolean
+            disabled: False
+            active: True
+    HSeparator:
+    FloatLayout:
+
+        size_hint_y: 0.1
+
+        GrayButton:
+            on_release: app.set_filters(reset=True)
+            on_release: input_job_family.text = "All Job Families"
+            on_release: input_job_title.text = "All Job Titles"
+            on_release: input_topic_name.text = "All Topics"
+            on_release: input_word_boolean.active = True
+            on_release: input_word_search.text = ""
+            text: 'Reset'
+            size_hint: 0.1, 0.3
+            pos_hint: {'right': 0.8, 'top': 0.9}
+        GreenButton:
+            on_release: app.set_filters(job_family=input_job_family.text, job_title=input_job_title.text, topic=input_topic_name.text, word_search=input_word_search.text, word_boolean=input_word_boolean.active)
+            text: 'Apply'
+            size_hint: 0.1, 0.3
+            pos_hint: {'right': 0.95, 'top': 0.9}
+
+
+
+
+
+
+<DocumentScreen>:
+    name: 'document'
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: (0.8, 0.8, 0.8, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text:"This is a [color=#eb4034]document[/color]"
+            readonly:True
+            markup:True
+            color: (0, 0, 0, 1)
+
 
 <SplashScreen>:
     name: 'splash'
@@ -28,7 +143,7 @@ ScreenManagement:
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
             RedButton:
-                on_release: app.root.current = 'actions'
+                on_release: app.root.current = 'document'
                 text: 'Begin'
                 size_hint: 0.1, 0.1
                 pos_hint: {'center_x': 0.5, 'top': 0.5}
@@ -57,6 +172,34 @@ ScreenManagement:
 <VSeparator@Separator>:
     size_hint_x: None
     width: dp(2)
+<StatusComponent@BoxLayout>:
+    size: self.size
+    pos: self.pos
+    orientation: 'horizontal'
+<StatusBar>:
+    canvas.before:
+        Color:
+            rgb: (0.1, 0.1, 0.1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    rows: 1
+    orientation: 'horizontal'
+    size: self.pos
+    pos: self.pos
+    StatusComponent:
+        size_hint_x: 0.2
+        Label:
+            text: "Documents: [color={}]{}[/color]".format(app.GREEN_TEXT, app.n_docs)
+            markup: True
+            font_size: 20
+    VSeparator:
+    StatusComponent:
+        size_hint_x: 0.2
+        Label:
+            text: "Topics: [color={}]{}[/color]".format(app.GREEN_TEXT, app.n_topics)
+            markup: True
+            font_size: 20
 
 
 

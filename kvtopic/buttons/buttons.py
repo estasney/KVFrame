@@ -26,3 +26,8 @@ class GreenButton(RoundedButton):
     PRESSED_COLOR = StringProperty(get_color_from_hex("#048243"))
     FONT_COLOR = StringProperty(get_color_from_hex("#000000"))
 
+class GrayButton(RoundedButton):
+    UNPRESSED_COLOR = StringProperty(get_color_from_hex("#A7A9AB"))
+    PRESSED_COLOR = StringProperty(get_color_from_hex("#58585B"))
+    FONT_COLOR = StringProperty(get_color_from_hex("#000000"))
+
