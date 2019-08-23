@@ -107,7 +107,7 @@
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgba: (0.8, 0.8, 0.8, 1)
+            rgba: (0.95, 0.95, 0.95, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -115,28 +115,41 @@
         size_hint: 1, 0.1
         pos_hint: {'top': 1}
     BoxLayout:
-        size_hint: 1, 0.7
+
+        size_hint: 1, 0.9
         orientation: 'vertical'
-        Label:
-            text:app.current_document_text
-            readonly:True
-            markup:True
-            color: (0, 0, 0, 1)
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            Label:
+                text:app.current_document_text + "\n" * 10
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, self.width
+                markup:True
+                padding: 5, 10
+                color: (0, 0, 0, 1)
+
     BoxLayout:
-        size_hint: 1, 0.2
+        size_hint: 1, 0.1
         orientation: 'horizontal'
 
         ColoredButton:
             id: prev_doc
-            disabled: True
-            text: "\u2190"
+            disabled: False if app.current_document_previous_enabled else True
+            text: "Previous"
+            on_release: app.paginate(kind='reverse', n=1)
         RedDarkColoredButton:
             id: exit_doc
             text: "Quit"
+            on_release: app.show_options()
         ColoredButton:
             id: next_doc
-            disabled: False
-            text: "\u2192"
+            disabled: False if app.current_document_next_enabled else True
+            text: "Next"
+            on_release: app.paginate(kind='advance', n=1)
 
 
 <DocumentBar>:
@@ -151,18 +164,25 @@
     size: self.pos
     pos: self.pos
     StatusComponent:
+        id: s1
         size_hint_x: 0.2
         Label:
             text: app.current_document_title
             markup: True
-            font_size: 20
+            text_size: s1.width, None
+            size: self.texture_size
+            halign: 'center'
     VSeparator:
     StatusComponent:
+        id: s2
         size_hint_x: 0.2
         Label:
             text: app.current_document_topics
             markup: True
-            font_size: 20
+            text_size: s2.width, None
+            size: self.texture_size
+            halign: 'center'
+
 
 <SplashScreen>:
     name: 'splash'

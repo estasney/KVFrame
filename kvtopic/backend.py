@@ -41,9 +41,6 @@ class TopicIndex(object):
         return td
 
 
-
-
-
 class DocumentIndex(object):
 
     def __init__(self, fp_data, fp_topics):

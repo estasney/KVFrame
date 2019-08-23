@@ -4,14 +4,18 @@ from datetime import datetime
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, BooleanProperty
+from unicodedata import normalize
+
 
 from kvtopic.backend import DocumentIndex
 from kvtopic.buttons import *
 from kvtopic.custom import *
+from kvtopic.keyword_highlighter import generate_highlighter_colors, ColoredKeywordProcessor
 
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '600')
+Config.set('graphics', 'default_font', ['CiscoSansTT'])
 z = RedRoundedButton  # prevents pycharm
 z = ScreenManagement
 
@@ -38,13 +42,41 @@ class TopicApp(App):
     job_titles = ListProperty()
     topic_names = ListProperty()
 
+    doc_highlighter_data = {}  # Color : keywords
+    color_dict = {}
+
     # document
     current_document_title = StringProperty()
     current_document_topics = StringProperty()
     current_document_text = StringProperty()
+    current_document_idx = NumericProperty()
+    current_document_idx_max = NumericProperty()
+    current_document_idx_str = StringProperty()
+    current_document_next_enabled = BooleanProperty(False)
+    current_document_previous_enabled = BooleanProperty(False)
 
     def on_topic_names(self, *args, **kwargs):
         self.n_topic_names = len(self.topic_names)
+
+    def on_current_document_idx(self, *args, **kwargs):
+        self.current_document_idx_str = "{} of {}".format((self.current_document_idx + 1),
+                                                          self.current_document_idx_max)
+        if self.current_document_previous_enabled is False:
+            if self.current_document_idx > 0:
+                self.current_document_previous_enabled = True
+        else:
+            if self.current_document_idx == 0:
+                self.current_document_previous_enabled = False
+
+        if self.current_document_next_enabled is False:
+            if (self.current_document_idx + 1) < self.current_document_idx_max:
+                self.current_document_next_enabled = True
+        else:
+            if (self.current_document_idx + 1) >= self.current_document_idx_max:
+                self.current_document_next_enabled = False
+
+    def on_current_document_idx_max(self, *args, **kwargs):
+        self.on_current_document_idx()
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
@@ -105,8 +137,15 @@ class TopicApp(App):
         if callback:
             callback(**callback_kwargs)
 
-
-
+    def setup_highlighter_data(self):
+        """
+        Create ColoredKeywordProcessor and populate with colors and their keywords
+        """
+        kws = {}
+        for i, name in enumerate(self.topic_names):
+            topic_kws = self.DATA_INDEX.name2keywords[name]
+            kws[name] = {'keywords': topic_kws}
+        self.doc_highlighter_data = kws
 
     def setup_backend(self, *args, **kwargs):
         self.n_docs = self.DATA_INDEX.n_docs_resulting
@@ -115,6 +154,7 @@ class TopicApp(App):
         self.job_families = sorted(self.DATA_INDEX.job_families)
         self.topic_names = sorted(self.DATA_INDEX.topic_names)
         self.n_topic_names = len(self.topic_names)
+        self.setup_highlighter_data()
 
     def values_filter(self, *args, **kwargs):
         value, caller_id = kwargs.pop('value'), kwargs.pop('input_id')
@@ -134,8 +174,71 @@ class TopicApp(App):
             value = self.DATA_INDEX.topic_data.name2id[value]
             self.update_available(value, col="T1")
 
+    def format_topic_header(self, doc_dict):
+        # get topic Ids and their scores
+        topic_score_cols = zip(["T1", "T2", "T3"], ["S1", "S2", "S3"])
+        topic_data_header = []
+        color_list = generate_highlighter_colors(n_colors=3)
+        color_dict = {}
+        for i, (topic_id_col, topic_score_col) in enumerate(topic_score_cols):
+            topic_id, topic_score = doc_dict[topic_id_col], round(doc_dict[topic_score_col], 2)
+            topic_name = self.DATA_INDEX.topic_data.id2name[topic_id]
+            topic_color = color_list[i]
+            color_dict[topic_name] = topic_color
+            topic_str = "[color={color}]{topic_name}[/color]: {score}".format(color=topic_color, topic_name=topic_name,
+                                                                              score=topic_score)
+            topic_data_header.append(topic_str)
+        self.color_dict = color_dict
+        return ", ".join(topic_data_header)
+
+    def cleanup_text(self, text):
+        text = normalize("NFKD", text)
+        text = text.encode().decode('ascii', errors='ignore')
+        text = text.replace("\t", "    ")
+        return text
+
+    def format_doc_text(self, doc_dict):
+        doc_text = doc_dict['Job_Description']
+        doc_text = self.cleanup_text(doc_text)
+
+        # what topics are we highlighting?
+        topic_ids = [doc_dict[col] for col in ["T1", "T2", "T3"]]
+        topics_names = [self.DATA_INDEX.topic_data.id2name[i] for i in topic_ids]
+        topics_keywords = {}
+        for name in topics_names:
+            topic_kws_data = self.doc_highlighter_data[name]
+            topic_color, topic_kws = self.color_dict[name], topic_kws_data['keywords']
+            topics_keywords[topic_color] = topic_kws
+        kp = ColoredKeywordProcessor()
+        kp.add_colored_keywords(topics_keywords)
+        formatted_text = kp.colorize_keywords(doc_text)
+        return formatted_text
+
+    def setup_document(self, *args, **kwargs):
+        """Fetch and format documents screen. Content is supplied from self.DATA_INDEX. App handles formatting and display"""
+        doc_dict = self.DATA_INDEX.current_doc
+        doc_idx, group_len = self.DATA_INDEX.current_index
+        self.current_document_title = doc_dict['Job_Title']
+        self.current_document_topics = self.format_topic_header(doc_dict)
+        self.current_document_text = self.format_doc_text(doc_dict)
+        self.current_document_idx = doc_idx
+        self.current_document_idx_max = group_len
+
+
     def show_documents(self, *args, **kwargs):
+        self.setup_document()
         self.screen_manager.current = 'documents'
+
+    def paginate(self, kind: str, n: int):
+        if kind == 'advance':
+            self.DATA_INDEX.advance(n)
+        else:
+            self.DATA_INDEX.reverse(n)
+        self.setup_document()
+
+    def show_options(self):
+        self.set_filters(reset=True)
+        self.screen_manager.current = 'options'
 
     def build(self):
         self.get_time()

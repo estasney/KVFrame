@@ -3,8 +3,8 @@ import seaborn as sns
 from flashtext import KeywordProcessor
 
 
-def generate_highlighter_colors(n_colors, starting_hue=0.1, saturation=0.95, lightness=0.65):
-    return sns.husl_palette(n_colors, starting_hue, saturation, lightness).as_hex()
+def generate_highlighter_colors(n_colors):
+    return sns.color_palette('colorblind', n_colors).as_hex()
 
 
 class ColoredKeywordProcessor(KeywordProcessor):
@@ -85,7 +85,7 @@ class ColoredKeywordProcessor(KeywordProcessor):
                     current_dict = self.keyword_trie_dict
                     if longest_sequence_found:
                         colorized_text = current_word.replace(current_white_space, "")
-                        markup = "[color={color}]{keyword}[/color]{ws}".format(color=keyword_color,
+                        markup = "[b][color={color}]{keyword}[/color][/b]{ws}".format(color=keyword_color,
                                                                                keyword=colorized_text,
                                                                                ws=current_white_space)
                         new_sentence.append(markup)
@@ -124,7 +124,7 @@ class ColoredKeywordProcessor(KeywordProcessor):
                 if self._keyword in current_dict:
                     keyword_color = current_dict[self._keyword]
                     # add markup
-                    markup = "[color={color}]{keyword}[/color]".format(color=keyword_color, keyword=current_word)
+                    markup = "[b][color={color}]{keyword}[/color][/b]".format(color=keyword_color, keyword=current_word)
                     new_sentence.append(markup)
                 else:
                     new_sentence.append(current_word)
