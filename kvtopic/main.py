@@ -5,6 +5,8 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.properties import NumericProperty, BooleanProperty
+from kivy.graphics import Rectangle
+from kivy.graphics import Color as KivyColor
 from unicodedata import normalize
 
 
@@ -32,6 +34,7 @@ class TopicApp(App):
     DATA_INDEX = DocumentIndex(DOCS_PATH, TOPICS_PATH)
 
     screen_manager = ObjectProperty()
+    doc_label = ObjectProperty()
 
     clock_time = StringProperty()
     resource_dir = StringProperty()
@@ -54,6 +57,20 @@ class TopicApp(App):
     current_document_idx_str = StringProperty()
     current_document_next_enabled = BooleanProperty(False)
     current_document_previous_enabled = BooleanProperty(False)
+
+    @staticmethod
+    def get_x(label, ref_x):
+        """ Return the x value of the ref/anchor relative to the canvas """
+        return label.center_x - label.texture_size[0] * 0.5 + ref_x
+
+    @staticmethod
+    def get_y(label, ref_y):
+        """ Return the y value of the ref/anchor relative to the canvas """
+        # Note the inversion of direction, as y values start at the top of
+        # the texture and increase downwards
+        return label.center_y + label.texture_size[1] * 0.5 - ref_y
+
+
 
     def on_topic_names(self, *args, **kwargs):
         self.n_topic_names = len(self.topic_names)
@@ -191,6 +208,9 @@ class TopicApp(App):
         self.color_dict = color_dict
         return ", ".join(topic_data_header)
 
+
+
+
     def cleanup_text(self, text):
         text = normalize("NFKD", text)
         text = text.encode().decode('ascii', errors='ignore')
@@ -205,9 +225,12 @@ class TopicApp(App):
         topic_ids = [doc_dict[col] for col in ["T1", "T2", "T3"]]
         topics_names = [self.DATA_INDEX.topic_data.id2name[i] for i in topic_ids]
         topics_keywords = {}
+        keywords_seen = set([])
         for name in topics_names:
             topic_kws_data = self.doc_highlighter_data[name]
             topic_color, topic_kws = self.color_dict[name], topic_kws_data['keywords']
+            topic_kws = [word for word in topic_kws if word not in keywords_seen]
+            keywords_seen.update(set(topic_kws))
             topics_keywords[topic_color] = topic_kws
         kp = ColoredKeywordProcessor()
         kp.add_colored_keywords(topics_keywords)
@@ -223,6 +246,23 @@ class TopicApp(App):
         self.current_document_text = self.format_doc_text(doc_dict)
         self.current_document_idx = doc_idx
         self.current_document_idx_max = group_len
+        Clock.schedule_once(self.highlight_doc_label, 0.5)
+
+    def highlight_doc_label(self, *argas, **kwargs):
+        label = self.doc_label
+        label.canvas.before.clear()
+
+        for name, boxes in label.refs.items():
+            color_name = name.split("_")[0]
+            for box in boxes:
+                with label.canvas.before:
+                    c = get_color_from_hex(color_name)[:3]
+                    c.append(0.7)
+                    KivyColor(*c)
+                    Rectangle(pos=(self.get_x(label, box[0]),
+                                   self.get_y(label, box[1])),
+                              size=(box[2] - box[0],
+                                    box[1] - box[3]))
 
 
     def show_documents(self, *args, **kwargs):
@@ -230,6 +270,7 @@ class TopicApp(App):
         self.screen_manager.current = 'documents'
 
     def paginate(self, kind: str, n: int):
+
         if kind == 'advance':
             self.DATA_INDEX.advance(n)
         else:
@@ -245,6 +286,9 @@ class TopicApp(App):
         self.setup_backend()
         sm = ScreenManagement()
         self.screen_manager = sm
+        screens = self.screen_manager.screens
+        documents_screen = next((x for x in screens if x.name == 'documents'), None)
+        self.doc_label = documents_screen.ids['doc_text']
         Clock.schedule_interval(self.get_time, 0.1)
         return sm
 

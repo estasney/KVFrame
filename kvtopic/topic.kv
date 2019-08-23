@@ -13,6 +13,7 @@
 
 <OptionsScreen>:
     name: 'options'
+    id: options_screen
     canvas.before:
         Color:
             rgba: (.8, 0.8, 0.8, 1)
@@ -104,6 +105,7 @@
 
 <DocumentScreen>:
     name: 'documents'
+    id: documents
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -124,6 +126,7 @@
             do_scroll_y: True
 
             Label:
+                id: doc_text
                 text:app.current_document_text + "\n" * 10
                 size_hint_y: None
                 height: self.texture_size[1]

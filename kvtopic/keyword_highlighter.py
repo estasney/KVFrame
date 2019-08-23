@@ -10,6 +10,13 @@ def generate_highlighter_colors(n_colors):
 class ColoredKeywordProcessor(KeywordProcessor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.kw_anchors = {}
+
+    def checkout_anchor(self, color):
+        current_count = self.kw_anchors.get(color, 0)
+        self.kw_anchors[color] = current_count + 1
+        return "{}_{}".format(color, current_count)
+
 
     def add_colored_keywords(self, keyword_colors):
         """
@@ -84,8 +91,11 @@ class ColoredKeywordProcessor(KeywordProcessor):
                             current_word = current_word_continued
                     current_dict = self.keyword_trie_dict
                     if longest_sequence_found:
-                        colorized_text = current_word.replace(current_white_space, "")
-                        markup = "[b][color={color}]{keyword}[/color][/b]{ws}".format(color=keyword_color,
+                        colorized_text = current_word.strip()
+                        if current_white_space != " ":
+                            colorized_text = colorized_text.replace(current_white_space, "")
+                        markup = "[ref={anchor}]{keyword}[/ref]{ws}".format(anchor=self.checkout_anchor(longest_sequence_found),
+
                                                                                keyword=colorized_text,
                                                                                ws=current_white_space)
                         new_sentence.append(markup)
@@ -124,7 +134,11 @@ class ColoredKeywordProcessor(KeywordProcessor):
                 if self._keyword in current_dict:
                     keyword_color = current_dict[self._keyword]
                     # add markup
-                    markup = "[b][color={color}]{keyword}[/color][/b]".format(color=keyword_color, keyword=current_word)
+                    colorized_text = current_word.replace(current_white_space, "")
+                    markup = "[ref={anchor}]{keyword}[/ref]{ws}".format(anchor=self.checkout_anchor(keyword_color),
+
+                                                                                                keyword=colorized_text,
+                                                                                                ws=current_white_space)
                     new_sentence.append(markup)
                 else:
                     new_sentence.append(current_word)
