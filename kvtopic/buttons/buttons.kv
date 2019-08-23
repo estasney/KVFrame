@@ -9,3 +9,15 @@
             radius: [10,]
     color: self.FONT_COLOR
     font_size: sp(20)
+
+<ColoredButton>:
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgb: self.DISABLED_COLOR if self.disabled else self.UNPRESSED_COLOR if self.state == 'normal' else self.PRESSED_COLOR
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    color: self.FONT_COLOR
+    font_size: sp(20)

@@ -13,6 +13,9 @@ class OptionsScreen(Screen):
 class StatusBar(BoxLayout):
     status_label = ObjectProperty()
 
+class DocumentBar(BoxLayout):
+    pass
+
 
 class ScreenManagement(ScreenManager):
     pass

@@ -1,8 +1,10 @@
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import ActionSeparator kivy.uix.actionbar.ActionSeparator
 #:import Factory kivy.factory.Factory
+#:import hex kivy.utils.get_color_from_hex
 
-ScreenManagement:
+<ScreenManagement>:
+    id: screen_manager
     transition: FadeTransition()
     OptionsScreen:
     SplashScreen:
@@ -19,11 +21,11 @@ ScreenManagement:
             size: self.size
     BoxLayout:
         orientation: 'vertical'
-        Filters:
-            size_hint: 1, 0.7
         StatusBar:
-            size_hint: 1, 0.1
+            size_hint: 1, 0.05
             pos_hint: {'top': 1}
+        Filters:
+            size_hint: 1, 0.8
 
 <Filters@BoxLayout>:
     orientation: 'vertical'
@@ -37,13 +39,14 @@ ScreenManagement:
             text: "All Job Families"
             values: app.job_families
             size_hint: 0.5, 1
-            on_text: app.values_filter(value=self.text, col='Job_Family')
+            on_text: app.values_filter(value=self.text, input_id='input_job_family')
 
         Spinner:
             id: input_job_title
             text: "All Job Titles"
             values: app.job_titles
             size_hint: 0.5, 1
+            on_text: app.values_filter(value=self.text, input_id='input_job_title')
 
     BoxLayout:
         orientation: 'horizontal'
@@ -55,6 +58,7 @@ ScreenManagement:
             text: "All Topics"
             values: app.topic_names
             size_hint: 0.5, 1
+            on_text: app.values_filter(value=self.text, input_id='input_topic_name')
     HSeparator:
     BoxLayout:
         orientation: 'horizontal'
@@ -78,11 +82,11 @@ ScreenManagement:
             disabled: False
             active: True
     HSeparator:
-    FloatLayout:
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.1
+        ColoredButton:
 
-        size_hint_y: 0.1
-
-        GrayButton:
             on_release: app.set_filters(reset=True)
             on_release: input_job_family.text = "All Job Families"
             on_release: input_job_title.text = "All Job Titles"
@@ -90,21 +94,16 @@ ScreenManagement:
             on_release: input_word_boolean.active = True
             on_release: input_word_search.text = ""
             text: 'Reset'
-            size_hint: 0.1, 0.3
-            pos_hint: {'right': 0.8, 'top': 0.9}
-        GreenButton:
-            on_release: app.set_filters(job_family=input_job_family.text, job_title=input_job_title.text, topic=input_topic_name.text, word_search=input_word_search.text, word_boolean=input_word_boolean.active)
-            text: 'Apply'
-            size_hint: 0.1, 0.3
-            pos_hint: {'right': 0.95, 'top': 0.9}
+            size_hint: 0.1, 1
 
-
-
-
+        GreenDarkColoredButton:
+            on_release: app.set_filters(job_family=input_job_family.text, job_title=input_job_title.text, topic=input_topic_name.text, word_search=input_word_search.text, word_boolean=input_word_boolean.active, callback=app.show_documents)
+            text: 'Apply and View'
+            size_hint: 0.1, 1
 
 
 <DocumentScreen>:
-    name: 'document'
+    name: 'documents'
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -112,14 +111,58 @@ ScreenManagement:
         Rectangle:
             pos: self.pos
             size: self.size
+    DocumentBar:
+        size_hint: 1, 0.1
+        pos_hint: {'top': 1}
     BoxLayout:
+        size_hint: 1, 0.7
         orientation: 'vertical'
         Label:
-            text:"This is a [color=#eb4034]document[/color]"
+            text:app.current_document_text
             readonly:True
             markup:True
             color: (0, 0, 0, 1)
+    BoxLayout:
+        size_hint: 1, 0.2
+        orientation: 'horizontal'
 
+        ColoredButton:
+            id: prev_doc
+            disabled: True
+            text: "\u2190"
+        RedDarkColoredButton:
+            id: exit_doc
+            text: "Quit"
+        ColoredButton:
+            id: next_doc
+            disabled: False
+            text: "\u2192"
+
+
+<DocumentBar>:
+    canvas.before:
+        Color:
+            rgb: (0.3, 0.3, 0.3)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    rows: 1
+    orientation: 'horizontal'
+    size: self.pos
+    pos: self.pos
+    StatusComponent:
+        size_hint_x: 0.2
+        Label:
+            text: app.current_document_title
+            markup: True
+            font_size: 20
+    VSeparator:
+    StatusComponent:
+        size_hint_x: 0.2
+        Label:
+            text: app.current_document_topics
+            markup: True
+            font_size: 20
 
 <SplashScreen>:
     name: 'splash'
@@ -142,7 +185,7 @@ ScreenManagement:
                 size_hint: 0.4, 0.4
                 pos_hint: {'center_x': 0.5, 'top': 0.95}
 
-            RedButton:
+            RedRoundedButton:
                 on_release: app.root.current = 'document'
                 text: 'Begin'
                 size_hint: 0.1, 0.1
@@ -191,6 +234,13 @@ ScreenManagement:
         size_hint_x: 0.2
         Label:
             text: "Documents: [color={}]{}[/color]".format(app.GREEN_TEXT, app.n_docs)
+            markup: True
+            font_size: 20
+    VSeparator:
+    StatusComponent:
+        size_hint_x: 0.2
+        Label:
+            text: "Unique Topics: [color={}]{}[/color]".format(app.GREEN_TEXT, app.n_topic_names)
             markup: True
             font_size: 20
     VSeparator:

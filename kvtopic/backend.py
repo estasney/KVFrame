@@ -1,5 +1,6 @@
 import pickle
 import re
+from itertools import chain
 from typing import Union
 import numpy as np
 import pandas as pd
@@ -19,6 +20,7 @@ class TopicIndex(object):
             matching_ids.append(topic_id)
             self.name2id[topic_name] = matching_ids
             self.id2name[topic_id] = topic_name
+        self.name2keywords = self.make_name2keywords()
 
     def __len__(self):
         return len(self.data)
@@ -26,6 +28,20 @@ class TopicIndex(object):
     def load_fp(self, fp):
         with open(fp, "rb") as f:
             return pickle.load(f)
+
+    def make_name2keywords(self):
+        # Group topics by name. For duplicated names, this will combine keywords
+        td = {}
+        for k, v in self.data.items():
+            topic_name = v['name']
+            topic_keywords = set([w['word'] for w in v['words']])
+            d_keywords = set(td.get(topic_name, []))
+            d_keywords.update(topic_keywords)
+            td[topic_name] = list(d_keywords)
+        return td
+
+
+
 
 
 class DocumentIndex(object):
@@ -41,11 +57,23 @@ class DocumentIndex(object):
     @property
     def topic_names(self):
         if self.idx_filter is None:
-            return self.topic_data.topic_names
+            topic_names = self.topic_data.topic_names
+            topic_names = sorted(list(set(topic_names)))
+            return topic_names
 
         d = self.data.loc[self.idx_filter]
         topic_numbers = d.T1.unique().tolist()
-        return [self.topic_data.id2name[x] for x in topic_numbers]
+        topic_names = [self.topic_data.id2name[x] for x in topic_numbers]
+        topic_names = sorted(list(set(topic_names)))
+        return topic_names
+
+    @property
+    def n_topic_names(self):
+        return len(self.topic_names)
+
+    @property
+    def name2keywords(self):
+        return self.topic_data.name2keywords
 
     @property
     def n_docs(self):
@@ -71,6 +99,8 @@ class DocumentIndex(object):
             available_topics = filtered_data['T1'].unique().tolist()
             return len(available_topics)
 
+
+
     @property
     def job_titles(self):
         unique_titles = self.list_unique('Job_Title')
@@ -91,6 +121,18 @@ class DocumentIndex(object):
         else:
             return self.data
 
+    @property
+    def current_doc(self):
+        filtered_data = self.results
+        next_match = filtered_data.iloc[self.idx_counter].to_dict()
+        return next_match
+
+    @property
+    def current_index(self):
+        current_idx = self.idx_counter
+        idx_max = len(self.results) - 1
+        return current_idx, idx_max
+
     def _compute_unique(self, col):
         if self.idx_filter is None:
             filtered_data = self.data
@@ -109,12 +151,21 @@ class DocumentIndex(object):
         unique_values = self._compute_unique(col).tolist()
         return unique_values
 
+    def advance(self, n=1):
+        self.idx_counter += n
+        return self.idx_counter
 
-    def next_match(self):
+    def reverse(self, n=1):
+        if (self.idx_counter - n) < 0:
+            raise IndexError("Cannot Reverse")
+        self.idx_counter -= n
+        return self.idx_counter
+
+
+    def previous_match(self):
         filtered_data = self.results
-        next_match = filtered_data.iloc[self.idx_counter].to_dict()
-        self.idx_counter += 1
-        return next_match
+        previous_match = filtered_data.iloc[self.idx_counter]
+
 
     def reset_filters(self):
         self.idx_filter = None
