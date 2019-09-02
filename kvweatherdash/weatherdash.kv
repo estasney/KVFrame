@@ -1,0 +1,23 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import ActionSeparator kivy.uix.actionbar.ActionSeparator
+#:import Factory kivy.factory.Factory
+#:import hex kivy.utils.get_color_from_hex
+
+<WeatherScreen>:
+    id: screen_manager
+    transition: FadeTransition()
+    CurrentWeather:
+
+<CurrentWeather>:
+    name: 'current'
+    id: current_weather
+    canvas.before:
+        Color:
+            rgba: (.8, 0.8, 0.8, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "78"
