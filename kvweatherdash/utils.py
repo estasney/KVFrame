@@ -1,12 +1,15 @@
 import requests
-# url = "https://forecast.weather.gov/MapClick.php?lat=35.643&lon=-78.6043&unit=0&lg=english&FcstType=dwml"
-# r = requests.get(url)
+url = "https://forecast.weather.gov/MapClick.php?lat=35.643&lon=-78.6043&unit=0&lg=english&FcstType=dwml"
+forecast_url = "https://forecast.weather.gov/MapClick.php?lat=35.643&lon=-78.6043&FcstType=digitalDWML"
+r = requests.get(url)
+r1 = requests.get(forecast_url)
 import xml.etree.ElementTree as ET
 from abc import ABC
 root = ET.fromstring(r.content)
+forecast_root = ET.fromstring(r1.content)
 
-forecast = root.find(".//data[@type='forecast']")
-current = root.find(".//data[@type='current observations']")
+# forecast = root.find(".//data[@type='forecast']")
+# current = root.find(".//data[@type='current observations']")
 
 
 class Selector(object):
@@ -50,7 +53,8 @@ class MyXMLParser(ABC):
                         search_str += " and "
             if child_path:
                 search_str += child_path
-
+        if search_str[-1] == "/":
+            return search_str[:-1]
         return search_str
 
 
@@ -66,7 +70,71 @@ class MyXMLParser(ABC):
 
 class ForecastWeatherParser(MyXMLParser):
 
-    def __init__(self):
+    DATA_NODE = Selector("data")
+    PARAMS_ACCESSOR = Selector("parameters")
+    TIME_LAYOUTS = Selector("time-layout")
+    TEMPERATURE_HOURLY = Selector("temperature", type="hourly", child_path="")
+    TEMPERATURE_HEAT_INDEX = Selector("temperature", type="heat index", child_path="")
+    TEMPERATURE_DEW_POINT = Selector("temperature", type="dew point", child_path="")
+    WINDSPEED = Selector("wind-speed", type="sustained", child_path="")
+    CLOUDS = Selector("cloud-amount", type="total", child_path="")
+    HUMIDITY = Selector("humidity", type="relative", child_path="")
+
+    PRECIPITATION_PROBABILITY = Selector("probability-of-precipitation", type='floating', child_path="")
+    PRECIPITATION_QPF = Selector("hourly-qpf", type="floating", child_path="")
+
+    DATA_KEYS = ["temperature_hourly", "temperature_heat_index", "clouds", "humidity", "probability_of_precipitation"]
+
+    def __init__(self, root):
+        self.root = root
+        self.params = root.find(self.helper(self.DATA_NODE, self.PARAMS_ACCESSOR))
+        self._temperature_hourly = self.params.find(self.helper(self.TEMPERATURE_HOURLY))
+        self._temperature_heat_index = self.params.find(self.helper(self.TEMPERATURE_HEAT_INDEX))
+        self._clouds = self.params.find(self.helper(self.CLOUDS))
+        self._humidity = self.params.find(self.helper(self.HUMIDITY))
+        self._probability_of_precipitation = self.params.find(self.helper(self.PRECIPITATION_PROBABILITY))
+        self.time_layout_node = self.root.find(self.helper(self.DATA_NODE, self.TIME_LAYOUTS))
+        self.time_layout = [self.strip_utc_offset(x.text) for x in self.time_layout_node[1:]]
+
+    def strip_utc_offset(self, x):
+        s = x.replace("-04:00", "")
+        return s
+
+
+    def _values_with_time(self, attr):
+        vals = [x.text for x in getattr(self, attr)[1:]]
+        times = self.time_layout
+        return list(zip(times, vals))
+
+    @property
+    def temperature_hourly(self):
+        return self._values_with_time('_temperature_hourly')
+
+    @property
+    def temperature_heat_index(self):
+        return self._values_with_time("_temperature_heat_index")
+
+    @property
+    def clouds(self):
+        return self._values_with_time("_clouds")
+
+    @property
+    def humidity(self):
+        return self._values_with_time("_humidity")
+
+    @property
+    def probability_of_precipitation(self):
+        return self._values_with_time("_probability_of_precipitation")
+
+
+
+
+    def to_dict(self):
+        data_out = {}
+        for k in self.DATA_KEYS:
+            data_out[k] = getattr(self, k)
+        return data_out
+
 
 
 class CurrentWeatherParser(MyXMLParser):
@@ -107,3 +175,7 @@ class CurrentWeatherParser(MyXMLParser):
         for k in self.DATA_KEYS:
             data_out[k] = getattr(self, k)
         return data_out
+
+
+fw = ForecastWeatherParser(forecast_root)
+print(fw.to_dict())
