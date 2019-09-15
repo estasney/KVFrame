@@ -11,13 +11,53 @@
 <CurrentWeather>:
     name: 'current'
     id: current_weather
-    canvas.before:
-        Color:
-            rgba: (.8, 0.8, 0.8, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, 0.3
+        pos_hint_y: {'top': 0}
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: "{}°F".format(app.current_weather.get('temperature', 'LOADING'))
+                font_size: 40
+            Label:
+                text: app.current_weather.get('weather_summary', '')
+                font_size: 30
+        VSeparator:
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: "Humidity: {}%".format(app.current_weather.get('humidity', ''))
+                font_size: 20
+            Label:
+                text: "Pressure: {}".format(app.current_weather.get('barometer', ''))
+                font_size: 20
+            Label:
+                text: "Dew Point: {}°F".format(app.current_weather.get('dew_point', ''))
+                font_size: 20
+    HSeparator:
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: "78"
+            text: "{} : {}".format(app.forecast_weather[0]['display_time'],app.forecast_weather[0]['temperature_hourly'])
+
+
+
+<Separator@Widget>:
+    canvas:
+        Color:
+            rgba: 0.365, 0.365, 0.365, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<HSeparator@Separator>:
+    size_hint_y: None
+    height: dp(2)
+
+<VSeparator@Separator>:
+    size_hint_x: None
+    width: dp(2)
+
+
+
