@@ -45,6 +45,7 @@ class WeatherDash(App):
 
     def on_forecast_weather(self, *args, **kwargs):
         self.last_update_time = self.clock_time
+        print(self.forecast_weather)
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
@@ -56,7 +57,7 @@ class WeatherDash(App):
         hour_zero = datetime(now.year, now.month, now.day, now.hour)
         for dt_k, v in data.items():
             output_k = hour_zero + dt_k
-            v['display_time'] = datetime.strftime(output_k, "%I:%M %p")
+            v['display_time'] = datetime.strftime(output_k, "%a %I:%M %p")
             output.append(v)
         return output
 
@@ -66,6 +67,7 @@ class WeatherDash(App):
         self._update_forecast_data()
         sm = WeatherScreen()
         self.screen_manager = sm
+        self.screen_manager.create_forecast(self, 2, 10)
         Clock.schedule_interval(self.get_time, 0.1)
         Clock.schedule_interval(self.update_current_data, 900)
         Clock.schedule_interval(self.update_forecast_data, 900)

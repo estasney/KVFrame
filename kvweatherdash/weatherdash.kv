@@ -6,40 +6,114 @@
 <WeatherScreen>:
     id: screen_manager
     transition: FadeTransition()
-    CurrentWeather:
+    Weather:
+        id: weather
+
+<Weather>:
+    name: 'weather'
+    current_weather: current_weather
+    forecast_weather: forecast_weather
+    BoxLayout:
+        orientation: 'vertical'
+        CurrentWeather:
+            id: current_weather
+            size_hint: 1, 0.2
+        HSeparator:
+        ForecastWeather:
+            id: forecast_weather
+            size_hint: 1, 0.8
+
 
 <CurrentWeather>:
-    name: 'current'
     id: current_weather
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint: 1, 0.3
-        pos_hint_y: {'top': 0}
-        BoxLayout:
-            orientation: 'vertical'
-            Label:
-                text: "{}°F".format(app.current_weather.get('temperature', 'LOADING'))
-                font_size: 40
-            Label:
-                text: app.current_weather.get('weather_summary', '')
-                font_size: 30
-        VSeparator:
-        BoxLayout:
-            orientation: 'vertical'
-            Label:
-                text: "Humidity: {}%".format(app.current_weather.get('humidity', ''))
-                font_size: 20
-            Label:
-                text: "Pressure: {}".format(app.current_weather.get('barometer', ''))
-                font_size: 20
-            Label:
-                text: "Dew Point: {}°F".format(app.current_weather.get('dew_point', ''))
-                font_size: 20
-    HSeparator:
+    canvas.before:
+        Color:
+            rgba: (0.9607843137254902, 0.9607843137254902, 0.9607843137254902, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
     BoxLayout:
         orientation: 'vertical'
         Label:
-            text: "{} : {}".format(app.forecast_weather[0]['display_time'],app.forecast_weather[0]['temperature_hourly'])
+            color: (0, 0, 0, 1)
+            text: "{}°F".format(app.current_weather.get('temperature', 'LOADING'))
+            font_size: 40
+
+        Label:
+            color: (0, 0, 0, 1)
+            text: app.current_weather.get('weather_summary', '')
+            font_size: 30
+    VSeparator:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            color: (0, 0, 0, 1)
+            text: "Humidity: {}%".format(app.current_weather.get('humidity', ''))
+            font_size: 20
+        Label:
+            color: (0, 0, 0, 1)
+            text: "Pressure: {}".format(app.current_weather.get('barometer', ''))
+            font_size: 20
+        Label:
+            color: (0, 0, 0, 1)
+            text: "Dew Point: {}°F".format(app.current_weather.get('dew_point', ''))
+            font_size: 20
+
+
+<ForecastWeather>:
+    size_hint: 1, 0.7
+    canvas.before:
+        Color:
+            rgba: (0.5137254901960785, 0.7647058823529413, 0.7999999999999999, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'vertical'
+    FutureWeatherTHead:
+
+<FutureWeatherTHead@BoxLayout>:
+    orientation: 'horizontal'
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Time"
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Temp"
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Clouds"
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Humidity"
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Rain %"
+    Label:
+        color: (0, 0, 0, 1)
+        text: "Rain Amt"
+
+
+
+<FutureWeather>:
+    orientation: 'horizontal'
+    Label:
+        color: (0, 0, 0, 1)
+        text: app.forecast_weather[root.idx].get('display_time', '')
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{}°F".format(app.forecast_weather[root.idx].get('temperature_hourly', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('clouds', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('humidity', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('precipitation_probability', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{}\"".format(app.forecast_weather[root.idx].get('precipitation_qpf', ''))
 
 
 
