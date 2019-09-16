@@ -21,7 +21,9 @@
         HSeparator:
         ForecastWeather:
             id: forecast_weather
-            size_hint: 1, 0.8
+            size_hint: 1, 0.75
+        StatusBar:
+            size_hint: 1, 0.05
 
 
 <CurrentWeather>:
@@ -114,6 +116,15 @@
     Label:
         color: (0, 0, 0, 1)
         text: "{}\"".format(app.forecast_weather[root.idx].get('precipitation_qpf', ''))
+
+<StatusBar@BoxLayout>:
+    orientation: 'horizontal'
+    Label:
+        text: "Last Updated : {}".format(app.last_update_time)
+    VSeparator:
+    Label:
+        text: app.clock_time
+
 
 
 

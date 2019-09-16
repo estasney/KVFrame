@@ -1,11 +1,12 @@
 import sys
 import os
+
 sys.path.append(os.getcwd())
 import threading
 from datetime import datetime
 
 from kivy.app import App
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.properties import *
 
 from kvweatherdash.custom import *
@@ -28,8 +29,13 @@ class WeatherDash(App):
     def run_threaded(self, target_function, *args, **kwargs):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
+    @mainthread
+    def _update_property(self, property_name, value):
+        setattr(self, property_name, value)
+
     def _update_current_data(self, *args, **kwargs):
-        self.current_weather = self.current_data_provider.fetch()
+        current_weather = self.current_data_provider.fetch()
+        self._update_property('current_weather', current_weather)
 
     def update_current_data(self, *args, **kwargs):
         self.run_threaded(self._update_current_data)
@@ -37,18 +43,11 @@ class WeatherDash(App):
     def _update_forecast_data(self, *args, **kwargs):
         forecast_weather = self.forecast_data_provider.fetch()
         forecast_weather_formatted = self.make_forecast_times(forecast_weather)
-        self.forecast_weather = forecast_weather_formatted
+        self._update_property('forecast_weather', forecast_weather_formatted)
+        self._update_property('last_update_time', self.clock_time)
 
     def update_forecast_data(self, *args, **kwargs):
         self.run_threaded(self._update_forecast_data)
-
-    def on_current_weather(self, *args, **kwargs):
-        self.last_update_time = self.clock_time
-        print(self.current_weather)
-
-    def on_forecast_weather(self, *args, **kwargs):
-        self.last_update_time = self.clock_time
-        print(self.forecast_weather)
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
