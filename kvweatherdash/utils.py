@@ -31,7 +31,6 @@ class Selector(object):
 
 
 class MyXMLParser(ABC):
-
     URL = ""
 
     def helper(self, *args, trailing_slash=True):
@@ -176,11 +175,10 @@ class ForecastWeather(MyXMLParser):
         return data_out
 
     @classmethod
-    def fetch(cls):
-        r = requests.get(cls.URL).content
+    def fetch(cls, session: requests.session):
+        r = session.get(cls.URL).content
         forecast = cls(r)
         return forecast.to_dict()
-
 
 
 class CurrentWeather(MyXMLParser):
@@ -222,12 +220,7 @@ class CurrentWeather(MyXMLParser):
         return data_out
 
     @classmethod
-    def fetch(cls):
-        r = requests.get(cls.URL).content
+    def fetch(cls, session: requests.session):
+        r = session.get(cls.URL).content
         forecast = cls(r)
         return forecast.to_dict()
-
-
-if __name__ == '__main__':
-    print(ForecastWeather.fetch())
-    # print(CurrentWeather.fetch())
