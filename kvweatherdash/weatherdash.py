@@ -15,9 +15,9 @@ from kvweatherdash.utils import ForecastWeather, CurrentWeather
 
 class WeatherDash(App):
     APP_NAME = 'Weather Dash'
+    # TODO Increase update frequency when NWS returns "NA"
 
     screen_manager = ObjectProperty()
-    api_key = None
     current_data_provider = CurrentWeather
     forecast_data_provider = ForecastWeather
     current_weather = DictProperty(rebind=True)
