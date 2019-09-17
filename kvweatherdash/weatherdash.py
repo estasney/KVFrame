@@ -5,14 +5,14 @@ import requests
 
 sys.path.append(os.getcwd())
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from kivy.app import App
 from kivy.clock import Clock, mainthread
 from kivy.properties import *
 
 from kvweatherdash.custom import *
-from kvweatherdash.utils import ForecastWeather, CurrentWeather
+from kvweatherdash.utils import ForecastWeather, CurrentWeather, SunProvider
 
 
 class WeatherDash(App):
@@ -22,18 +22,35 @@ class WeatherDash(App):
     screen_manager = ObjectProperty()
     current_data_provider = CurrentWeather
     forecast_data_provider = ForecastWeather
+    sun_data_provider = SunProvider
     session = None
     current_weather = DictProperty(rebind=True)
     forecast_weather = ListProperty(rebind=True)
     clock_time = StringProperty()
     forecast_times = DictProperty(rebind=True)
     last_update_time = StringProperty()
+    sunrise_time = StringProperty()
+    sunset_time = StringProperty()
 
     def run_threaded(self, target_function, *args, **kwargs):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
     def _update_property(self, property_name, value):
         setattr(self, property_name, value)
+
+    def _update_sun_data(self, *args, **kwargs):
+        sun_data = self.sun_data_provider.fetch(self.session)['results']
+        sunrise = datetime.fromisoformat(sun_data['sunrise']) - timedelta(hours=4)
+        sunset = datetime.fromisoformat(sun_data['sunset']) - timedelta(hours=4)
+
+        sunrise_str = datetime.strftime(sunrise, "%I:%M %p")
+        sunset_str = datetime.strftime(sunset, "%I:%M %p")
+        self._update_property('sunrise_time', sunrise_str)
+        self._update_property('sunset_time', sunset_str)
+
+    def update_sun_data(self, *args, **kwargs):
+        self.run_threaded(self._update_sun_data)
+
 
     def _update_current_data(self, *args, **kwargs):
         current_weather = self.current_data_provider.fetch(self.session)
@@ -79,12 +96,14 @@ class WeatherDash(App):
         self.get_time()
         self._update_current_data()
         self._update_forecast_data()
+        self._update_sun_data()
         sm = WeatherScreen()
         self.screen_manager = sm
         self.screen_manager.create_forecast(self, 2, 10)
         Clock.schedule_interval(self.get_time, 0.1)
         Clock.schedule_interval(self.update_current_data, 900)
         Clock.schedule_interval(self.update_forecast_data, 900)
+        Clock.schedule_interval(self.update_sun_data, 43200)
         return sm
 
 

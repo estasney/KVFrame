@@ -45,6 +45,16 @@
             color: (0, 0, 0, 1)
             text: app.current_weather.get('weather_summary', '')
             font_size: 30
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                color: (0, 0, 0, 1)
+                text: "Sunrise: {}".format(app.sunrise_time)
+                font_size: 20
+            Label:
+                color: (0, 0, 0, 1)
+                text: "Sunset: {}".format(app.sunset_time)
+                font_size: 20
     VSeparator:
     BoxLayout:
         orientation: 'vertical'

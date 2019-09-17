@@ -224,3 +224,15 @@ class CurrentWeather(MyXMLParser):
         r = session.get(cls.URL).content
         forecast = cls(r)
         return forecast.to_dict()
+
+class SunProvider(object):
+
+    URL = 'http://api.sunrise-sunset.org/json?lat=-35.643370&lng=-78.604248&formatted=0'
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def fetch(cls, session: requests.session):
+        r = session.get(cls.URL).json()
+        return r
