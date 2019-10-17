@@ -132,8 +132,12 @@ class ForecastWeather(MyXMLParser):
 
         else:
             f = lambda x: x
-        vals = [f(x.text) for x in getattr(self, attr)[1:]]
-        return vals
+        attr_val = getattr(self, attr)
+        if attr_val is None:
+            return []
+        else:
+            return [f(x.text) for x in attr_val[1:]]
+
 
     @property
     def temperature_hourly(self):
