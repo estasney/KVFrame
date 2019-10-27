@@ -231,7 +231,7 @@ class CurrentWeather(MyXMLParser):
 
 class SunProvider(object):
 
-    URL = 'http://api.sunrise-sunset.org/json?lat=-35.643370&lng=-78.604248&formatted=0'
+    URL = 'http://api.sunrise-sunset.org/json?lat=35.643370&lng=-78.604248&formatted=0'
 
     def __init__(self):
         pass
