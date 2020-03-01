@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from functools import partial
 from itertools import zip_longest
+from cytoolz import groupby
 
 import pandas as pd
 import requests
@@ -162,6 +163,23 @@ class ForecastWeather(MyXMLParser):
     @property
     def precipitation_qpf(self):
         return self._get_values("_precipitation_qpf", as_type=float)
+
+    @property
+    def daily_high_lows(self):
+        d = self.to_dict()
+        # This looks like {Sun 03/01: [timedelta()...]}
+        grouped_days = groupby(lambda x: (x + datetime.now()).strftime("%a %m/%d"), d)
+        day_data = {}
+        for str_date, timedeltas in grouped_days.items():
+            values = [d[td] for td in timedeltas]
+            data = {
+                'temperature_max': max(values, key=lambda x: x.get('temperature_hourly', 0)),
+                'temperature_min': min(values, key=lambda x: x.get('temperature_hourly', 100)),
+                'precipitation_prob_max': max(values, key=lambda x: x.get('precipitation_probability', 0.0)),
+                'precipitation_qpf_sum': sum([x.get('precipitation_qpf', 0) for x in values])
+                }
+            day_data[str_date] = data
+        return day_data
 
     def to_dict(self):
         data_out = {}
