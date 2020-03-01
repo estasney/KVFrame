@@ -164,18 +164,20 @@ class ForecastWeather(MyXMLParser):
     def precipitation_qpf(self):
         return self._get_values("_precipitation_qpf", as_type=float)
 
-    @property
-    def daily_high_lows(self):
-        d = self.to_dict()
+    @classmethod
+    def daily_high_lows(cls, fetched_data: dict):
+        """
+        Data is result of calling self.to_dict()
+        """
         # This looks like {Sun 03/01: [timedelta()...]}
-        grouped_days = groupby(lambda x: (x + datetime.now()).strftime("%a %m/%d"), d)
+        grouped_days = groupby(lambda x: (x + datetime.now()).strftime("%a %m/%d"), fetched_data)
         day_data = {}
         for str_date, timedeltas in grouped_days.items():
-            values = [d[td] for td in timedeltas]
+            values = [fetched_data[td] for td in timedeltas]
             data = {
-                'temperature_max': max(values, key=lambda x: x.get('temperature_hourly', 0)),
-                'temperature_min': min(values, key=lambda x: x.get('temperature_hourly', 100)),
-                'precipitation_prob_max': max(values, key=lambda x: x.get('precipitation_probability', 0.0)),
+                'temperature_max': max(values, key=lambda x: x.get('temperature_hourly', 0))['temperature_hourly'],
+                'temperature_min': min(values, key=lambda x: x.get('temperature_hourly', 100))['temperature_hourly'],
+                'precipitation_prob_max': max(values, key=lambda x: x.get('precipitation_probability', 0.0))['precipitation_probability'],
                 'precipitation_qpf_sum': sum([x.get('precipitation_qpf', 0) for x in values])
                 }
             day_data[str_date] = data

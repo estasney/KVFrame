@@ -6,21 +6,40 @@
 <WeatherScreen>:
     id: screen_manager
     transition: FadeTransition()
-    Weather:
-        id: weather
+    WeatherDaily:
+        id: weather_daily
+    WeatherHourly:
+        id: weather_hourly
 
-<Weather>:
-    name: 'weather'
+
+<WeatherHourly>:
+    name: 'weather_hourly'
     current_weather: current_weather
-    forecast_weather: forecast_weather
+    forecast_weather_hourly: forecast_weather_hourly
     BoxLayout:
         orientation: 'vertical'
         CurrentWeather:
             id: current_weather
             size_hint: 1, 0.2
         HSeparator:
-        ForecastWeather:
-            id: forecast_weather
+        ForecastWeatherHourly:
+            id: forecast_weather_hourly
+            size_hint: 1, 0.75
+        StatusBar:
+            size_hint: 1, 0.05
+
+<WeatherDaily>:
+    name: 'weather_daily'
+    current_weather: current_weather
+    forecast_weather_daily: forecast_weather_daily
+    BoxLayout:
+        orientation: 'vertical'
+        CurrentWeather:
+            id: current_weather
+            size_hint: 1, 0.2
+        HSeparator:
+        ForecastWeatherDaily:
+            id: forecast_weather_daily
             size_hint: 1, 0.75
         StatusBar:
             size_hint: 1, 0.05
@@ -71,8 +90,7 @@
             text: "Dew Point: {}°F".format(app.current_weather.get('dew_point', ''))
             font_size: 20
 
-
-<ForecastWeather>:
+<ForecastWeatherDaily>:
     size_hint: 1, 0.7
     canvas:
         Color:
@@ -81,9 +99,19 @@
             pos: self.pos
             size: self.size
     orientation: 'vertical'
-    FutureWeatherTHead:
 
-<FutureWeatherTHead@BoxLayout>:
+<ForecastWeatherHourly>:
+    size_hint: 1, 0.7
+    canvas:
+        Color:
+            rgba: (0.5137254901960785, 0.7647058823529413, 0.7999999999999999, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'vertical'
+    FutureWeatherHourlyTHead:
+
+<FutureWeatherHourlyTHead@BoxLayout>:
     orientation: 'horizontal'
     Label:
         color: (0, 0, 0, 1)
@@ -105,27 +133,45 @@
         text: "Rain Amt"
 
 
-
-<FutureWeather>:
+<FutureWeatherDaily>:
     orientation: 'horizontal'
     Label:
         color: (0, 0, 0, 1)
-        text: app.forecast_weather[root.idx].get('display_time', '')
+        text: root.idx
+    Label:
+        text: "[color=f82000]{}[/color][color=000000]/[/color][color=1a24ba]{}[/color][color=000000]°F[/color]".format(app.forecast_weather_daily[root.idx].get('temperature_max', ''), app.forecast_weather_daily[root.idx].get('temperature_min', ''))
+        markup: True
+        font_size: 40
     Label:
         color: (0, 0, 0, 1)
-        text: "{}°F".format(app.forecast_weather[root.idx].get('temperature_hourly', ''))
+        text: "{:.0f}% Rain".format(app.forecast_weather_daily[root.idx].get('precipitation_prob_max', 0))
+        font_size: 18
     Label:
         color: (0, 0, 0, 1)
-        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('clouds', ''))
+        text: "{:.2f}\"".format(app.forecast_weather_daily[root.idx].get('precipitation_qpf_sum', 0))
+        font_size: 18
+
+
+<FutureWeatherHourly>:
+    orientation: 'horizontal'
     Label:
         color: (0, 0, 0, 1)
-        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('humidity', ''))
+        text: app.forecast_weather_hourly[root.idx].get('display_time', '')
     Label:
         color: (0, 0, 0, 1)
-        text: "{:.0f}%".format(app.forecast_weather[root.idx].get('precipitation_probability', ''))
+        text: "{}°F".format(app.forecast_weather_hourly[root.idx].get('temperature_hourly', ''))
     Label:
         color: (0, 0, 0, 1)
-        text: "{}\"".format(app.forecast_weather[root.idx].get('precipitation_qpf', ''))
+        text: "{:.0f}%".format(app.forecast_weather_hourly[root.idx].get('clouds', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{:.0f}%".format(app.forecast_weather_hourly[root.idx].get('humidity', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{:.0f}%".format(app.forecast_weather_hourly[root.idx].get('precipitation_probability', ''))
+    Label:
+        color: (0, 0, 0, 1)
+        text: "{}\"".format(app.forecast_weather_hourly[root.idx].get('precipitation_qpf', ''))
 
 <StatusBar@BoxLayout>:
     orientation: 'horizontal'

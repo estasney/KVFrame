@@ -25,7 +25,8 @@ class WeatherDash(App):
     sun_data_provider = SunProvider
     session = None
     current_weather = DictProperty(rebind=True)
-    forecast_weather = ListProperty(rebind=True)
+    forecast_weather_hourly = ListProperty(rebind=True)
+    forecast_weather_daily = DictProperty(rebind=True)
     clock_time = StringProperty()
     forecast_times = DictProperty(rebind=True)
     last_update_time = StringProperty()
@@ -63,8 +64,10 @@ class WeatherDash(App):
     def _update_forecast_data(self, *args, **kwargs):
         forecast_weather = self.forecast_data_provider.fetch(self.session)
         forecast_weather_formatted = self.make_forecast_times(forecast_weather)
-        self._update_property('forecast_weather', forecast_weather_formatted)
+        self._update_property('forecast_weather_hourly', forecast_weather_formatted)
         print(forecast_weather_formatted)
+        forecast_weather_daily = self.forecast_data_provider.daily_high_lows(forecast_weather)
+        self._update_property('forecast_weather_daily', forecast_weather_daily)
         self._update_property('last_update_time', self.clock_time)
 
     def _setup_session(self):
@@ -99,7 +102,8 @@ class WeatherDash(App):
         self._update_sun_data()
         sm = WeatherScreen()
         self.screen_manager = sm
-        self.screen_manager.create_forecast(self, 2, 10)
+        self.screen_manager.create_hourly_forecast(self, 2, 10)
+        self.screen_manager.create_daily_forecast(self, 3)
         Clock.schedule_interval(self.get_time, 0.1)
         Clock.schedule_interval(self.update_current_data, 900)
         Clock.schedule_interval(self.update_forecast_data, 900)
