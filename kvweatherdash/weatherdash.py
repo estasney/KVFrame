@@ -41,8 +41,8 @@ class WeatherDash(App):
 
     def _update_sun_data(self, *args, **kwargs):
         sun_data = self.sun_data_provider.fetch(self.session)['results']
-        sunrise = datetime.fromisoformat(sun_data['sunrise']) - timedelta(hours=4)
-        sunset = datetime.fromisoformat(sun_data['sunset']) - timedelta(hours=4)
+        sunrise = datetime.fromisoformat(sun_data['sunrise']).astimezone()
+        sunset = datetime.fromisoformat(sun_data['sunset']).astimezone()
 
         sunrise_str = datetime.strftime(sunrise, "%I:%M %p")
         sunset_str = datetime.strftime(sunset, "%I:%M %p")
