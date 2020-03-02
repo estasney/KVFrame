@@ -81,7 +81,7 @@ class WeatherDash(App):
         self.run_threaded(self._update_forecast_data)
 
     def get_time(self, *args, **kwargs):
-        self.clock_time = datetime.strftime(datetime.now(), "%I:%M:%S %p")
+        self.clock_time = datetime.strftime(datetime.now(), "%I:%M %p")
 
     def make_forecast_times(self, data, *args, **kwargs):
         # Use current hour as "0-hour".
@@ -104,7 +104,7 @@ class WeatherDash(App):
         self.screen_manager = sm
         self.screen_manager.create_hourly_forecast(self, 2, 10)
         self.screen_manager.create_daily_forecast(self, 3)
-        Clock.schedule_interval(self.get_time, 0.1)
+        Clock.schedule_interval(self.get_time, 10)
         Clock.schedule_interval(self.update_current_data, 900)
         Clock.schedule_interval(self.update_forecast_data, 900)
         Clock.schedule_interval(self.update_sun_data, 43200)
