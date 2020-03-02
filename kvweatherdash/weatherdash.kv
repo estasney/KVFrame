@@ -137,19 +137,17 @@
     orientation: 'horizontal'
     Label:
         color: (0, 0, 0, 1)
-        text: root.idx
+        text: app.forecast_weather_daily[root.idx].get('str_date', '')
+        font_size: 18
     Label:
         text: "[color=f82000]{}[/color][color=000000]/[/color][color=1a24ba]{}[/color][color=000000]°F[/color]".format(app.forecast_weather_daily[root.idx].get('temperature_max', ''), app.forecast_weather_daily[root.idx].get('temperature_min', ''))
         markup: True
         font_size: 40
     Label:
         color: (0, 0, 0, 1)
-        text: "{:.0f}% Rain".format(app.forecast_weather_daily[root.idx].get('precipitation_prob_max', 0))
+        text: "{:.0f}% Rain : {:.2f}\"".format(app.forecast_weather_daily[root.idx].get('precipitation_prob_max', 0),app.forecast_weather_daily[root.idx].get('precipitation_qpf_sum', 0))
         font_size: 18
-    Label:
-        color: (0, 0, 0, 1)
-        text: "{:.2f}\"".format(app.forecast_weather_daily[root.idx].get('precipitation_qpf_sum', 0))
-        font_size: 18
+
 
 
 <FutureWeatherHourly>:
@@ -184,7 +182,7 @@
 
 
 
-<Separator@Widget>:
+<Separator>:
     canvas:
         Color:
             rgba: 0.365, 0.365, 0.365, 1
@@ -192,11 +190,11 @@
             pos: self.pos
             size: self.size
 
-<HSeparator@Separator>:
+<HSeparator>:
     size_hint_y: None
     height: dp(2)
 
-<VSeparator@Separator>:
+<VSeparator>:
     size_hint_x: None
     width: dp(2)
 

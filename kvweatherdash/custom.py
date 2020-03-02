@@ -3,9 +3,18 @@ from kivy.properties import ObjectProperty, DictProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.app import App
+from kivy.uix.widget import Widget
 
 from kvweatherdash.weatherdash import WeatherDash
 
+class Separator(Widget):
+    pass
+
+class HSeparator(Separator):
+    pass
+
+class VSeparator(Separator):
+    pass
 
 class CurrentWeather(BoxLayout):
     pass
@@ -19,8 +28,10 @@ class ForecastWeatherHourly(BoxLayout):
 
 class ForecastWeatherDaily(BoxLayout):
 
-    def add_future_weather(self, idx):
+    def add_future_weather(self, idx, n_days):
         self.add_widget(FutureWeatherDaily(idx=idx))
+        if (idx + 1) != n_days:
+            self.add_widget(HSeparator())
 
 
 class WeatherHourly(Screen):
@@ -35,8 +46,8 @@ class WeatherDaily(Screen):
     current_weather = ObjectProperty()
     forecast_weather_daily = ObjectProperty()
 
-    def add_future_weather(self, idx):
-        self.forecast_weather_daily.add_future_weather(idx=idx)
+    def add_future_weather(self, idx, n_days):
+        self.forecast_weather_daily.add_future_weather(idx=idx, n_days=n_days)
 
 
 class IntegerProperty(object):
@@ -85,4 +96,4 @@ class WeatherScreen(ScreenManager):
     def create_daily_forecast(self, app: WeatherDash, n_days: int):
         available_days = list(app.forecast_weather_daily.keys())
         for day in available_days[:n_days]:
-            self.ids['weather_daily'].add_future_weather(day)
+            self.ids['weather_daily'].add_future_weather(day, n_days)
