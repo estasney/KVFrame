@@ -102,8 +102,8 @@ class WeatherDash(App):
         self._update_sun_data()
         sm = WeatherScreen()
         self.screen_manager = sm
-        self.screen_manager.create_hourly_forecast(self, 2, 10)
-        self.screen_manager.create_daily_forecast(self, 3)
+        self.screen_manager.create_hourly_forecast(app=self, hour_interval=1, max_rows=8)
+        self.screen_manager.create_daily_forecast(app=self, n_days=3)
         Clock.schedule_interval(self.get_time, 10)
         Clock.schedule_interval(self.update_current_data, 900)
         Clock.schedule_interval(self.update_forecast_data, 900)
