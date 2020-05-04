@@ -5,6 +5,7 @@ from kivy.app import App
 from kivy.clock import Clock, mainthread
 from kivy.core.audio import SoundLoader
 from kivy.properties import *
+from kivy.uix.button import Button
 
 from .input import SN74LS165
 
@@ -77,6 +78,7 @@ class Arcade(App):
     def build(self):
         self._setup_input()
         Clock.schedule_interval(self.get_input_state, 0.01)
+        return Button(text='hello world')
 
 if __name__ == '__main__':
     Arcade().run()
