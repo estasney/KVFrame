@@ -52,7 +52,6 @@ class WeatherDash(App):
     def update_sun_data(self, *args, **kwargs):
         self.run_threaded(self._update_sun_data)
 
-
     def _update_current_data(self, *args, **kwargs):
         current_weather = self.current_data_provider.fetch(self.session)
         self._update_property('current_weather', current_weather)
@@ -73,8 +72,9 @@ class WeatherDash(App):
     def _setup_session(self):
         session = requests.session()
         session.headers.update({
-                                   'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Safari/537.36'
-                                   })
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 '
+                          'Safari/537.36 '
+            })
         self.session = session
 
     def update_forecast_data(self, *args, **kwargs):

@@ -7,14 +7,18 @@ from kivy.uix.widget import Widget
 
 from kvweatherdash.weatherdash import WeatherDash
 
+
 class Separator(Widget):
     pass
+
 
 class HSeparator(Separator):
     pass
 
+
 class VSeparator(Separator):
     pass
+
 
 class CurrentWeather(BoxLayout):
     pass
