@@ -77,3 +77,6 @@ class Arcade(App):
     def build(self):
         self._setup_input()
         Clock.schedule_interval(self.get_input_state, 0.01)
+
+if __name__ == '__main__':
+    Arcade().run()
