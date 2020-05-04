@@ -6,7 +6,7 @@ from kivy.clock import Clock, mainthread
 from kivy.core.audio import SoundLoader
 from kivy.properties import *
 
-from kvarcade.input import SN74LS165
+from .input import SN74LS165
 
 
 class Arcade(App):
