@@ -18,7 +18,7 @@ from kvarcade.input import SN74LS165
 class Arcade(App):
     APP_NAME = "Arcade"
 
-    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Trains/Whistle.mp3.mp3"))
+    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Trains/Whistle.mp3"))
     SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
     SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
     SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
