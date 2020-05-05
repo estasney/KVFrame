@@ -87,6 +87,7 @@ class SN74LS165:
         GPIO.output(self.clockPin, GPIO.LOW)
 
     def poll(self):
+        self.shift_load()
         is_high = set([])
         for i in range(self.datawidth):
             bitVal = GPIO.input(self.dataPin)
