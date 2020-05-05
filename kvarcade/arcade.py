@@ -15,6 +15,14 @@ from kvarcade.input import SN74LS165
 class Arcade(App):
     APP_NAME = "Arcade"
 
+    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
 
     button_0 = BooleanProperty()
     button_1 = BooleanProperty()
@@ -29,6 +37,7 @@ class Arcade(App):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
     def _on_button(self, sound_num):
+        print("Changing sound for button/sound:  {}".format(sound_num))
         sound = getattr(self, "SOUND_{}".format(sound_num))
         is_stopped = sound.get_pos() == 0
         if is_stopped:
@@ -63,24 +72,18 @@ class Arcade(App):
     def _setup_input(self):
         self.input_provider = SN74LS165()
 
-    def get_input_state(self, *args, **kwargs):
+    def get_input_state(self):
         is_high = self.input_provider.poll()
         for i in range(8):
-            btn_atr = "BUTTON_" + str(i)
-            setattr(self, btn_atr, i in is_high)
+            btn_atr = "button_{}".format(i)
+            current_state = getattr(self, btn_atr)
+            new_state = i in is_high
+            if current_state != new_state:
+                setattr(self, btn_atr, new_state)
 
     def build(self):
         self._setup_input()
         self.sm = ScreenManager()
-        self.SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-        self.SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-
         Clock.schedule_interval(self.get_input_state, 0.01)
         return self.sm
 
