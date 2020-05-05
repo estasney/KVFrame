@@ -73,6 +73,8 @@ class Arcade(App):
         self._on_button(6)
 
     def on_button_7(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
         self._on_button(7)
 
     def _setup_input(self):
