@@ -1,11 +1,13 @@
 import os
 import threading
-
+import sys
+sys.path.append("/home/pi/Desktop/KVFrame")
 from kivy.app import App
-from kivy.clock import Clock, mainthread
+from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
-from kivy.properties import *
+from kivy.properties import BooleanProperty
 from kivy.uix.button import Button
+from kivy.uix.screenmanager import ScreenManager
 
 from .input import SN74LS165
 
@@ -77,8 +79,9 @@ class Arcade(App):
 
     def build(self):
         self._setup_input()
+        self.sm = ScreenManager()
         Clock.schedule_interval(self.get_input_state, 0.01)
-        return Button(text='hello world')
+        return self.sm
 
 if __name__ == '__main__':
     Arcade().run()
