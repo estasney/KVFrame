@@ -19,8 +19,8 @@ class Arcade(App):
     APP_NAME = "Arcade"
 
     SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Trains/Whistle.mp3"))
-    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Sirens/EuroSiren.wav"))
-    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Sirens/Siren.wav"))
+    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/UI/UserSelect.mp3"))
     SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
     SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
     SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
