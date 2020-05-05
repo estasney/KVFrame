@@ -63,7 +63,7 @@ class Arcade(App):
     def _setup_input(self):
         self.input_provider = SN74LS165()
 
-    def get_input_state(self):
+    def get_input_state(self, *args, **kwargs):
         is_high = self.input_provider.poll()
         for i in range(8):
             btn_atr = "BUTTON_" + str(i)
