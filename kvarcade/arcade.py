@@ -1,7 +1,9 @@
 import os
+
 os.environ['KIVY_AUDIO'] = 'sdl2'
 import threading
 import sys
+
 sys.path.append("/home/pi/Desktop/KVFrame")
 from kivy.app import App
 from kivy.clock import Clock
@@ -16,14 +18,14 @@ from kvarcade.input import SN74LS165
 class Arcade(App):
     APP_NAME = "Arcade"
 
-    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
-    SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
+    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
+    SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Planes/Afterburner.mp3"))
 
     button_0 = BooleanProperty(False)
     button_1 = BooleanProperty(False)
@@ -37,45 +39,40 @@ class Arcade(App):
     def run_threaded(self, target_function, *args, **kwargs):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
-    def _on_button(self, sound_num):
-
+    def _on_button(self, sound_num, *args):
+        _, new_value = args
         sound = getattr(self, "SOUND_{}".format(sound_num))
-        is_stopped = sound.get_pos() == 0
-        if is_stopped:
+        if new_value:
             print("Playing sound for : {}".format(sound_num))
-        else:
-            print("Stopping sound for {}".format(sound_num))
-        if is_stopped:
             sound.play()
             sound.seek(0)
         else:
+            print("Stopping sound for {}".format(sound_num))
             sound.stop()
 
     def on_button_0(self, *args, **kwargs):
-        self._on_button(0)
+        self._on_button(0, *args)
 
     def on_button_1(self, *args, **kwargs):
-        self._on_button(1)
+        self._on_button(1, *args)
 
     def on_button_2(self, *args, **kwargs):
-        self._on_button(2)
+        self._on_button(2, *args)
 
     def on_button_3(self, *args, **kwargs):
-        self._on_button(3)
+        self._on_button(3, *args)
 
     def on_button_4(self, *args, **kwargs):
-        self._on_button(4)
+        self._on_button(4, *args)
 
     def on_button_5(self, *args, **kwargs):
-        self._on_button(5)
+        self._on_button(5, *args)
 
     def on_button_6(self, *args, **kwargs):
-        self._on_button(6)
+        self._on_button(6, *args)
 
     def on_button_7(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        self._on_button(7)
+        self._on_button(7, *args)
 
     def _setup_input(self):
         self.input_provider = SN74LS165()
@@ -94,6 +91,7 @@ class Arcade(App):
         self.sm = ScreenManager()
         Clock.schedule_interval(self.get_input_state, 0.01)
         return self.sm
+
 
 if __name__ == '__main__':
     Arcade().run()
