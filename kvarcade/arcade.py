@@ -1,4 +1,5 @@
 import os
+os.environ['KIVY_AUDIO'] = 'sdl2'
 import threading
 import sys
 sys.path.append("/home/pi/Desktop/KVFrame")
