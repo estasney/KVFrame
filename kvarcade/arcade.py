@@ -24,22 +24,26 @@ class Arcade(App):
     SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
     SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Cars/Engine/Mustang.wav"))
 
-    button_0 = BooleanProperty()
-    button_1 = BooleanProperty()
-    button_2 = BooleanProperty()
-    button_3 = BooleanProperty()
-    button_4 = BooleanProperty()
-    button_5 = BooleanProperty()
-    button_6 = BooleanProperty()
-    button_7 = BooleanProperty()
+    button_0 = BooleanProperty(False)
+    button_1 = BooleanProperty(False)
+    button_2 = BooleanProperty(False)
+    button_3 = BooleanProperty(False)
+    button_4 = BooleanProperty(False)
+    button_5 = BooleanProperty(False)
+    button_6 = BooleanProperty(False)
+    button_7 = BooleanProperty(False)
 
     def run_threaded(self, target_function, *args, **kwargs):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
     def _on_button(self, sound_num):
-        print("Changing sound for button/sound:  {}".format(sound_num))
+
         sound = getattr(self, "SOUND_{}".format(sound_num))
         is_stopped = sound.get_pos() == 0
+        if is_stopped:
+            print("Playing sound for : {}".format(sound_num))
+        else:
+            print("Stopping sound for {}".format(sound_num))
         if is_stopped:
             sound.play()
         else:
