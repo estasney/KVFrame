@@ -9,7 +9,7 @@ from kivy.properties import BooleanProperty
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager
 
-from .input import SN74LS165
+from kvarcade.input import SN74LS165
 
 
 class Arcade(App):
