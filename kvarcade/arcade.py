@@ -43,11 +43,11 @@ class Arcade(App):
         _, new_value = args
         sound = getattr(self, "SOUND_{}".format(sound_num))
         if new_value:
-            print("Playing sound for : {}".format(sound_num))
+            # print("Playing sound for : {}".format(sound_num))
             sound.play()
             sound.seek(0)
         else:
-            print("Stopping sound for {}".format(sound_num))
+            # print("Stopping sound for {}".format(sound_num))
             sound.stop()
 
     def on_button_0(self, *args, **kwargs):
