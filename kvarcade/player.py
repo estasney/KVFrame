@@ -21,7 +21,7 @@ class SoundCycler:
             self.current_file = next(self.filecycler)
             self.sound = SoundLoader.load(self.current_file)
 
-    def start(self, *args, **kwargs):
+    def play(self, *args, **kwargs):
         self.sound.play()
         self.sound.seek(0)
 

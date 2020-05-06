@@ -46,7 +46,6 @@ class Arcade(App):
         if new_value:
             # print("Playing sound for : {}".format(sound_num))
             sound.play()
-            sound.seek(0)
         else:
             # print("Stopping sound for {}".format(sound_num))
             sound.stop()

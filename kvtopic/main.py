@@ -66,7 +66,7 @@ class TopicApp(App):
     @staticmethod
     def get_y(label, ref_y):
         """ Return the y value of the ref/anchor relative to the canvas """
-        # Note the inversion of direction, as y values start at the top of
+        # Note the inversion of direction, as y values play at the top of
         # the texture and increase downwards
         return label.center_y + label.texture_size[1] * 0.5 - ref_y
 
