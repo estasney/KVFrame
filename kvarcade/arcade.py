@@ -13,19 +13,20 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager
 
 from kvarcade.input import SN74LS165
+from kvarcade.player import SoundCycler
 
 
 class Arcade(App):
     APP_NAME = "Arcade"
 
-    SOUND_0 = SoundLoader.load(os.path.realpath("resources/audio/Trains/Whistle.mp3"))
-    SOUND_1 = SoundLoader.load(os.path.realpath("resources/audio/Sirens/Siren.wav"))
-    SOUND_2 = SoundLoader.load(os.path.realpath("resources/audio/UI/UserSelect.mp3"))
-    SOUND_3 = SoundLoader.load(os.path.realpath("resources/audio/Sirens/Firetruck.mp3"))
-    SOUND_4 = SoundLoader.load(os.path.realpath("resources/audio/Noise/WhistleBoing.mp3"))
-    SOUND_5 = SoundLoader.load(os.path.realpath("resources/audio/Cars/BlackPoliceCar.mp3"))
-    SOUND_6 = SoundLoader.load(os.path.realpath("resources/audio/Cars/GreenGarbageTruck.mp3"))
-    SOUND_7 = SoundLoader.load(os.path.realpath("resources/audio/Cars/YellowSchoolBus.mp3"))
+    SOUND_0 = SoundCycler(os.path.realpath("resources/audio/Trains"))
+    SOUND_1 = SoundCycler(os.path.realpath("resources/audio/Sirens"))
+    SOUND_2 = SoundCycler(os.path.realpath("resources/audio/Cars/Engine"))
+    SOUND_3 = SoundCycler(os.path.realpath("resources/audio/Cars/Race"))
+    SOUND_4 = SoundCycler(os.path.realpath("resources/audio/Cars/Narrated"))
+    SOUND_5 = SoundCycler(os.path.realpath("resources/audio/Submarine"))
+    SOUND_6 = SoundCycler(os.path.realpath("resources/audio/Noise/Construction"))
+    SOUND_7 = SoundCycler(os.path.realpath("resources/audio/Planes"))
 
     button_0 = BooleanProperty(False)
     button_1 = BooleanProperty(False)
