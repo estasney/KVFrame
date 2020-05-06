@@ -1,17 +1,13 @@
-import os
-
-os.environ['KIVY_AUDIO'] = 'sdl2'
-import threading
 import sys
-
 sys.path.append("/home/pi/Desktop/KVFrame")
+import os
+os.environ['KIVY_AUDIO'] = 'sdl2'
+
+import threading
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty
-from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager
-
 from kvarcade.input import SN74LS165
 from kvarcade.player import SoundCycler
 
@@ -44,10 +40,8 @@ class Arcade(App):
         _, new_value = args
         sound = getattr(self, "SOUND_{}".format(sound_num))
         if new_value:
-            # print("Playing sound for : {}".format(sound_num))
             sound.play()
         else:
-            # print("Stopping sound for {}".format(sound_num))
             sound.stop()
 
     def on_button_0(self, *args, **kwargs):
