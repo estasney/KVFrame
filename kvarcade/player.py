@@ -13,6 +13,7 @@ class SoundCycler:
         self.filecycler = cycle(self.files)
         self.current_file = next(self.filecycler)
         self.sound = SoundLoader.load(self.current_file)
+        self.sound.loop = True
 
     def stop(self, *args, **kwargs):
         self.sound.stop()
@@ -20,6 +21,7 @@ class SoundCycler:
         if cycle_file:
             self.current_file = next(self.filecycler)
             self.sound = SoundLoader.load(self.current_file)
+            self.sound.loop = True
 
     def play(self, *args, **kwargs):
         self.sound.play()
