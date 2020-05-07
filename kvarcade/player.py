@@ -6,7 +6,7 @@ from kivy.core.audio import SoundLoader
 
 class SoundCycler:
 
-    def __init__(self, folder, alpha=1, beta=2):
+    def __init__(self, folder, alpha=1, beta=1):
         self.files = [os.path.join(folder, f) for f in os.listdir(folder)]
         self.alpha = alpha
         self.beta = beta
