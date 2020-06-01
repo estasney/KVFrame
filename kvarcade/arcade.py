@@ -19,7 +19,7 @@ class Arcade(App):
     SOUND_1 = SoundCycler(os.path.realpath("resources/audio/Sirens"))
     SOUND_2 = SoundCycler(os.path.realpath("resources/audio/Cars/Engine"))
     SOUND_3 = SoundCycler(os.path.realpath("resources/audio/Cars/Race"))
-    SOUND_4 = SoundCycler(os.path.realpath("resources/audio/Cars/Narrated"))
+    SOUND_4 = SoundCycler(os.path.realpath("resources/audio/Noise/Random"))
     SOUND_5 = SoundCycler(os.path.realpath("resources/audio/Submarine"))
     SOUND_6 = SoundCycler(os.path.realpath("resources/audio/Noise/Construction"))
     SOUND_7 = SoundCycler(os.path.realpath("resources/audio/Planes"))
