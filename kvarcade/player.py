@@ -20,6 +20,7 @@ class SoundCycler:
         for root, _, files in os.walk(folder):
             for file in files:
                 files.append(os.path.join(root, file))
+        print("\n".join(files))
         return files
 
     def stop(self, *args, **kwargs):
