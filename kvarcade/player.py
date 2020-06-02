@@ -16,12 +16,12 @@ class SoundCycler:
         self.sound.loop = True
 
     def _find_files(self, folder):
-        files = []
+        files_found = []
         for root, _, files in os.walk(folder):
             for file in files:
-                files.append(os.path.join(root, file))
-        print("\n".join(files))
-        return files
+                files_found.append(os.path.join(root, file))
+        print("\n".join(files_found))
+        return files_found
 
     def stop(self, *args, **kwargs):
         self.sound.stop()
