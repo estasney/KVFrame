@@ -1,4 +1,7 @@
-kivyinstall/*
+**/kivyinstall/
 /.idea/
 /kvtopic/resources/fonts/
 /kvweatherdash/resources/api_key.txt
+**/.env
+!**/.env_example
+**/audio/

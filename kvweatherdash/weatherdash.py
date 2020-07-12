@@ -2,13 +2,11 @@ import sys
 import os
 
 import requests
-
-sys.path.append(os.getcwd())
+from dotenv import load_dotenv
 import threading
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from kivy.app import App
-from kivy.clock import Clock, mainthread
+from kivy.clock import Clock
 from kivy.properties import *
 
 from kvweatherdash.custom import *
@@ -32,6 +30,10 @@ class WeatherDash(App):
     last_update_time = StringProperty()
     sunrise_time = StringProperty()
     sunset_time = StringProperty()
+    weather_longitude = None
+    weather_latitude = None
+    sun_longitude = None
+    sun_latitude = None
 
     def run_threaded(self, target_function, *args, **kwargs):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
@@ -40,7 +42,8 @@ class WeatherDash(App):
         setattr(self, property_name, value)
 
     def _update_sun_data(self, *args, **kwargs):
-        sun_data = self.sun_data_provider.fetch(self.session)['results']
+        sun_data = self.sun_data_provider.fetch(latitude=self.sun_latitude,
+                                                longitude=self.sun_longitude, session=self.session)['results']
         sunrise = datetime.fromisoformat(sun_data['sunrise']).astimezone()
         sunset = datetime.fromisoformat(sun_data['sunset']).astimezone()
 
@@ -53,7 +56,8 @@ class WeatherDash(App):
         self.run_threaded(self._update_sun_data)
 
     def _update_current_data(self, *args, **kwargs):
-        current_weather = self.current_data_provider.fetch(self.session)
+        current_weather = self.current_data_provider.fetch(latitude=self.weather_latitude,
+                                                           longitude=self.weather_longitude, session=self.session)
         self._update_property('current_weather', current_weather)
         print(current_weather)
 
@@ -61,7 +65,9 @@ class WeatherDash(App):
         self.run_threaded(self._update_current_data)
 
     def _update_forecast_data(self, *args, **kwargs):
-        forecast_weather = self.forecast_data_provider.fetch(self.session)
+        forecast_weather = self.forecast_data_provider.fetch(latitude=self.weather_latitude,
+                                                             longitude=self.weather_longitude,
+                                                             session=self.session)
         forecast_weather_formatted = self.make_forecast_times(forecast_weather)
         self._update_property('forecast_weather_hourly', forecast_weather_formatted)
         print(forecast_weather_formatted)
@@ -95,6 +101,13 @@ class WeatherDash(App):
         return output
 
     def build(self):
+        try:
+            self.weather_latitude = float(os.getenv("WEATHER_LATITUDE"))
+            self.weather_longitude = float(os.getenv("WEATHER_LONGITUDE"))
+        except ValueError:
+            raise EnvironmentError(r"Requires WEATHER_LATITUDE and WEATHER_LONGITUDE in .env file")
+        self.sun_latitude = os.getenv("SUN_LATITUDE", self.weather_latitude)
+        self.sun_longitude = os.getenv("SUN_LONGITUDE", self.weather_longitude)
         self._setup_session()
         self.get_time()
         self._update_current_data()
@@ -112,4 +125,6 @@ class WeatherDash(App):
 
 
 if __name__ == '__main__':
+    sys.path.append(os.getcwd())
+    load_dotenv()
     WeatherDash().run()

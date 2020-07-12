@@ -55,7 +55,7 @@ class MyXMLParser(ABC):
 
 
 class ForecastWeather(MyXMLParser):
-    URL = "https://forecast.weather.gov/MapClick.php?lat=35.643&lon=-78.6043&FcstType=digitalDWML"
+    URL = "https://forecast.weather.gov/MapClick.php?lat={lat}&lon={lon}&FcstType=digitalDWML"
     DATA_NODE = Selector("data")
     PARAMS_ACCESSOR = Selector("parameters")
     TIME_LAYOUTS = Selector("time-layout")
@@ -201,14 +201,14 @@ class ForecastWeather(MyXMLParser):
         return data_out
 
     @classmethod
-    def fetch(cls, session: requests.session):
-        r = session.get(cls.URL).content
+    def fetch(cls, latitude: float, longitude: float, session: requests.session):
+        r = session.get(cls.URL.format(lon=longitude, lat=latitude)).content
         forecast = cls(r)
         return forecast.to_dict()
 
 
 class CurrentWeather(MyXMLParser):
-    URL = "https://forecast.weather.gov/MapClick.php?lat=35.643&lon=-78.6043&unit=0&lg=english&FcstType=dwml"
+    URL = "https://forecast.weather.gov/MapClick.php?lat={lat}&lon={lon}&unit=0&lg=english&FcstType=dwml"
     PARAMS_ACCESSOR = Selector("parameters")
     TEMPERATURE_APPARENT = Selector("temperature", type="apparent")
     TEMPERATURE_DEW_POINT = Selector("temperature", type="dew point")
@@ -246,19 +246,19 @@ class CurrentWeather(MyXMLParser):
         return data_out
 
     @classmethod
-    def fetch(cls, session: requests.session):
-        r = session.get(cls.URL).content
+    def fetch(cls, latitude: float, longitude: float, session: requests.session):
+        r = session.get(cls.URL.format(lat=latitude, lon=longitude)).content
         forecast = cls(r)
         return forecast.to_dict()
 
 
 class SunProvider(object):
-    URL = 'http://api.sunrise-sunset.org/json?lat=35.643370&lng=-78.604248&formatted=0'
+    URL = 'http://api.sunrise-sunset.org/json?lat={lat}&lng={lon}&formatted=0'
 
     def __init__(self):
         pass
 
     @classmethod
-    def fetch(cls, session: requests.session):
-        r = session.get(cls.URL).json()
+    def fetch(cls, latitude: float, longitude: float, session: requests.session):
+        r = session.get(cls.URL.format(lat=latitude, lon=longitude)).json()
         return r
