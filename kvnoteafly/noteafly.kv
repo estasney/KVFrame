@@ -1,0 +1,89 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import ActionSeparator kivy.uix.actionbar.ActionSeparator
+#:import Factory kivy.factory.Factory
+#:import hex kivy.utils.get_color_from_hex
+#:import rgba kivy.utils.rgba
+
+<NoteAppScreenManager>:
+    id: screen_manager
+    transition: FadeTransition()
+    NoteScreen:
+        id: note_screen
+
+<NoteScreen>:
+    name: 'note_screen'
+    current_note: current_note
+    Note:
+        id: current_note
+
+
+<Note>:
+    id: note_container
+    note_title: note_title
+    note_content: note_content
+    note_tags: note_tags
+
+    BoxLayout:
+        orientation: 'vertical'
+        NoteTitle:
+            id: note_title
+            size_hint: 1, 0.1
+        HSeparator:
+            size_hint: 1, 0.01
+        NoteContent:
+            id: note_content
+            size_hint: 1, 0.7
+        HSeparator:
+            size_hint: 1, 0.01
+        NoteTags:
+            id: note_tags
+            size_hint: 1, 0.1
+
+<NoteTitle>:
+    id: note_title
+    canvas:
+        Color:
+            rgb: app.colors['Dark']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    FloatLayout:
+        Label:
+            id: note_title_label
+            color: hex('#ffffff')
+            text: root.title_text
+            bold: True
+            font_size: 28
+            pos_hint: {"x": 0, "y": 0}
+            size_hint: (0.3, 1)
+
+<NoteContent>:
+    id: note_content
+    canvas:
+        Color:
+            rgb: app.colors['Primary']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        id: note_content_label
+        color: hex('#ffffff')
+        text: root.note_text
+        font_size: 24
+
+<NoteTags>:
+    id: note_tags
+    canvas:
+        Color:
+            rgb: app.colors['Dark']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            id: note_tag_label
+            color: hex('#000000')
+            text: ''
+
