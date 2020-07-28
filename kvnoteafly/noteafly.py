@@ -2,27 +2,31 @@ import string
 import sys
 import os
 import random
-from itertools import combinations_with_replacement
-
-import numpy as np
 import requests
-from colour import Color
+
 from dotenv import load_dotenv
 import threading
+from itertools import cycle
 from datetime import datetime
 
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import *
 
-from kvnoteafly.custom import *
+from custom.screens import NoteAppScreenManager
+from db import create_session, Note
 
 
 class NoteAFly(App):
     APP_NAME = 'NoteAFly'
 
-    screen_manager = ObjectProperty()
     session = None
+    n_notes = 0
+    note_idx = 0
+    notes_data = None
+
+    screen_manager = ObjectProperty()
+
     bg_color_r = NumericProperty(0)
     bg_color_g = NumericProperty(0)
     bg_color_b = NumericProperty(0)
@@ -44,36 +48,40 @@ class NoteAFly(App):
         setattr(self, property_name, value)
 
     def _setup_session(self):
-        session = requests.session()
-        session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 '
-                          'Safari/537.36 '
-            })
-        self.session = session
+        self.session = create_session()
+
+    def _setup_data(self):
+        n_notes = self.session.query(Note).count()
+        self.n_notes = n_notes
+        self.notes_data = [note.to_tuple() for note in self.session.query(Note).all()]
+        self.note_idx = cycle(range(self.n_notes - 1))
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M %p")
 
     def update_current_note(self, *args, **kwargs):
+        note = self.notes_data[next(self.note_idx)]
+
         d = dict(
-                note_title='Test',
-                note_text=f"{''.join(random.choices(string.ascii_lowercase, k=4))}"
+                note_title=note.note_title,
+                note_text=note.note_text,
+                kbd_buttons=note.kbd_buttons
                 )
         self._update_property("note_data", d)
-
 
     def on_note_data(self, *args, **kwargs):
         self.screen_manager.create_notes(self)
 
     def build(self):
         self._setup_session()
+        self._setup_data()
         self.get_time()
-
         sm = NoteAppScreenManager()
         self.screen_manager = sm
         sm.create_notes(app=self)
+        Clock.schedule_once(self.update_current_note)
         Clock.schedule_interval(self.get_time, 10)
-        Clock.schedule_interval(self.update_current_note, 0.25)
+        Clock.schedule_interval(self.update_current_note, 5)
         return sm
 
 

@@ -1,3 +1,5 @@
+#:import NoteAppScreen custom.screens
+#:import Note custom.note
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import ActionSeparator kivy.uix.actionbar.ActionSeparator
 #:import Factory kivy.factory.Factory
@@ -8,10 +10,13 @@
     id: screen_manager
     transition: FadeTransition()
     NoteScreen:
-        id: note_screen
+        id: note_screen1
+        name: 'note_screen1'
+    NoteScreen:
+        id: note_screen2
+        name: 'note_screen2'
 
 <NoteScreen>:
-    name: 'note_screen'
     current_note: current_note
     Note:
         id: current_note
@@ -59,6 +64,7 @@
 
 <NoteContent>:
     id: note_content
+    key_container: key_container
     canvas:
         Color:
             rgb: app.colors['Primary']
@@ -66,11 +72,32 @@
             pos: self.pos
             size: self.size
 
-    Label:
-        id: note_content_label
-        color: hex('#ffffff')
-        text: root.note_text
-        font_size: 24
+    BoxLayout:
+        orientation: 'vertical'
+        NoteContentKeyboard:
+            canvas:
+                Color:
+                    rgb: app.colors['Dark']
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'horizontal'
+            id: key_container
+            size_hint: (1, 0.2)
+
+        Label:
+            id: note_content_label
+            color: hex('#ffffff')
+            text: root.note_text
+            font_size: 48
+            size_hint: (1, 0.8)
+            text_size: root.width, self.height
+            size: self.texture_size
+            valign: 'middle'
+            halign: 'center'
+
+
+
 
 <NoteTags>:
     id: note_tags
@@ -86,4 +113,25 @@
             id: note_tag_label
             color: hex('#000000')
             text: ''
+
+<KeyboardLabel>
+    background_color: 0,0,0,0
+    canvas.before:
+
+        Color:
+            rgb: self.background_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10, ]
+
+<KeyboardLabelSeparatorOuter>:
+    background_color: 0,0,0,0
+
+<Separator@Widget>
+<HSeparator@Separator>
+<VSeparator@Separator>
+
+
+
 
