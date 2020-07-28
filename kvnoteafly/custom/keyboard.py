@@ -25,7 +25,7 @@ class KeyboardImage(Image):
     def __init__(self, **kwargs):
         text = kwargs.pop('text')
         src = os.path.join("static", "keys", text.lower()) + ".png"
-        super(KeyboardImage, self).__init__(source=src, **kwargs)
+        super(KeyboardImage, self).__init__(source=src, mipmap=True, **kwargs)
 
 
 class KeyboardLabel(Label):
