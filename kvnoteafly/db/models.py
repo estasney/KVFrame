@@ -1,11 +1,14 @@
+import os
+from datetime import datetime
+from enum import Enum, IntEnum
+from pathlib import Path
+from typing import Optional, List
+
 from sqlalchemy import Column, Integer, create_engine, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.collections import InstrumentedList
 from sqlalchemy_utils import database_exists, create_database
-from collections import namedtuple
-
-import os
-from pathlib import Path
 
 Base = declarative_base()
 
@@ -23,19 +26,77 @@ def create_session(db_path=db_path, base=Base):
     session = Session()
     return session
 
-NoteTuple = namedtuple('NoteTuple', 'note_title note_text, kbd_buttons')
+
+class DictMixin:
+
+    def to_dict(self, recurse_relations: Optional[List[Base]] = None, **kwargs) -> dict:
+        """
+        Convert values to dict
+        Returns
+        -------
+
+        """
+
+        def handle_enums(x):
+            if not isinstance(x, Enum):
+                return x
+            return x.name
+
+        def handle_nested_list(x: InstrumentedList):
+            output = []
+            for item in x:
+                if hasattr(item, 'to_dict'):
+                    item: DictMixin
+                    if recurse_relations is not None and item.__class__ in recurse_relations:
+                        output.append(item.to_dict(recurse_relations=recurse_relations))
+                else:
+                    output.append(str(item))
+            return output
+
+        def route_type(x):
+            if isinstance(x, Enum):
+                return handle_enums
+            elif hasattr(x, 'to_dict'):
+                return getattr(x, 'to_dict')
+            elif isinstance(x, datetime):
+                return lambda y: getattr(y, 'isoformat')()
+            elif isinstance(x, InstrumentedList):
+                return handle_nested_list
+            else:
+                return lambda y: y
+
+        def handle(x):
+            f = route_type(x)
+            return f(x)
+
+        raw_data = {k: v for k, v in vars(self).items()}
+        properties = [k for k, v in vars(self.__class__).items() if isinstance(v, property)]
+        data = {k: handle(v) for k, v in raw_data.items() if self._filter_key(k)}
+        for k in properties:
+            if self._filter_key(k):
+                data[k] = handle(getattr(self, k))
+        return data
+
+    def _filter_key(self, k: str) -> bool:
+        if k.startswith("_"):
+            return False
+        return True
 
 
-class Note(Base):
+class NoteType(IntEnum):
+    TEXT_NOTE = 0
+    KEYBOARD_NOTE = 1
+    RST_NOTE = 2
+
+
+class Note(Base, DictMixin):
     __tablename__ = 'notes'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(128))
     keys_str = Column(String(128))
     text = Column(String(1024))
-
-    def to_tuple(self):
-        return NoteTuple(note_title=self.title, note_text=self.text, kbd_buttons=self.keys)
+    _note_type = Column(Integer, default=0)
 
     @property
     def keys(self):
@@ -48,3 +109,15 @@ class Note(Base):
     @keys.setter
     def keys(self, kbd_keys):
         self.keys_str = ",".join(kbd_keys)
+
+    @property
+    def note_type(self) -> int:
+        return self._note_type
+
+    @note_type.getter
+    def note_type(self):
+        return NoteType(self._note_type)
+
+    @note_type.setter
+    def note_type(self, nt: NoteType):
+        self._note_type = nt.value
