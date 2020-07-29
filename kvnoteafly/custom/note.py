@@ -2,6 +2,7 @@ from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from custom.keyboard import KeyboardLabelSeparatorOuter, KeyboardLabelSeparatorInner, KeyboardImage
+from db import NoteType
 
 
 class Note(BoxLayout):
@@ -9,27 +10,44 @@ class Note(BoxLayout):
     note_content = ObjectProperty()
     note_tags = ObjectProperty()
 
-    def set_note_content(self, **kwargs):
-        self.note_title.set(**kwargs)
-        self.note_content.set(**kwargs)
+    def set_note_content(self, note_data: dict):
+        title_data = {
+            "title": note_data['title']
+            }
+
+        content_data = {
+            "text": note_data['text'],
+            "keys_str": note_data['keys_str'],
+            "note_type": note_data['note_type']
+            }
+
+        self.note_title.set(title_data)
+        self.note_content.set(content_data)
 
 
 class NoteContent(BoxLayout):
-    note_text = StringProperty()
-    key_container = ObjectProperty()
 
-    def __init__(self, **kwargs):
-        if 'note_text' in kwargs:
-            self.note_text = kwargs.pop('note_text')
-        if 'kbd_buttons' in kwargs:
-            self.key_container.keyboard_buttons = kwargs.pop('kbd_buttons')
-        super().__init__(**kwargs)
+    def set(self, content_data: dict):
 
-    def set(self, **kwargs):
-        if 'note_text' in kwargs:
-            self.note_text = kwargs.pop("note_text")
-        if 'kbd_buttons' in kwargs:
-            self.key_container.keyboard_buttons = kwargs.pop('kbd_buttons')
+        self.clear_widgets()
+
+        if content_data['note_type'] == NoteType.TEXT_NOTE.name:
+            self._set_text(content_data)
+        elif content_data['note_type'] == NoteType.KEYBOARD_NOTE.name:
+            self._set_keyboard(content_data)
+        elif content_data['note_type'] == NoteType.RST_NOTE.name:
+            self._set_rst(content_data)
+
+    def _set_text(self, content_data: dict):
+        pass
+
+    def _set_keyboard(self, content_data: dict):
+        self.add_widget(
+                ContentKeyboard(content_data=content_data)
+                )
+
+    def _set_rst(self, content_data:dict):
+        pass
 
 
 class NoteTitle(BoxLayout):
@@ -40,16 +58,25 @@ class NoteTitle(BoxLayout):
             self.title_text = kwargs.pop('note_title')
         super().__init__(**kwargs)
 
-    def set(self, **kwargs):
-        if 'note_title' in kwargs:
-            self.title_text = kwargs.pop('note_title')
+    def set(self, title_data):
+        self.title_text = title_data['title']
 
+class ContentText(BoxLayout):
+    pass
 
-class NoteContentKeyboard(BoxLayout):
+class ContentKeyboard(BoxLayout):
+    note_text = StringProperty()
     keyboard_buttons = ListProperty()
+    key_container = ObjectProperty()
+
+    def __init__(self, content_data, **kwargs):
+        self.note_text = content_data['text']
+        self.keyboard_buttons = content_data['keys_str'].split(",")
+        super(ContentKeyboard, self).__init__(**kwargs)
+        self.on_keyboard_buttons()
 
     def on_keyboard_buttons(self, *args, **kwargs):
-        self.clear_widgets()
+        self.key_container.clear_widgets()
         n_btns = len(self.keyboard_buttons)
         last_btn = n_btns - 1
 
@@ -58,19 +85,24 @@ class NoteContentKeyboard(BoxLayout):
         # Inner spacing is n_buttons - 1
 
         if n_btns == 1:
-            self.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
-            self.add_widget(KeyboardImage(text=self.keyboard_buttons[0], size_hint=(0.1, 1)))
-            self.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
+            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
+            self.key_container.add_widget(KeyboardImage(text=self.keyboard_buttons[0], size_hint=(0.1, 1)))
+            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
         else:
             btn_size_hint_x = 0.25 / (n_btns + (n_btns - 1))
             for i, btn in enumerate(self.keyboard_buttons):
                 if i == 0:
-                    self.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
+                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
                 if n_btns >= i > 0:
-                    self.add_widget(KeyboardLabelSeparatorInner(size_hint=(btn_size_hint_x, 1)))
-                self.add_widget(KeyboardImage(text=btn))
+                    self.key_container.add_widget(KeyboardLabelSeparatorInner(size_hint=(btn_size_hint_x, 1)))
+                self.key_container.add_widget(KeyboardImage(text=btn))
                 if i == last_btn:
-                    self.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
+                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
+
+
+
+class ContentRST(BoxLayout):
+    pass
 
 
 class NoteTags(BoxLayout):

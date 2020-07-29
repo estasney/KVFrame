@@ -65,7 +65,7 @@
 
 <NoteContent>:
     id: note_content
-    key_container: key_container
+    orientation: 'vertical'
     canvas:
         Color:
             rgb: app.colors['Primary']
@@ -73,30 +73,36 @@
             pos: self.pos
             size: self.size
 
-    BoxLayout:
-        orientation: 'vertical'
-        NoteContentKeyboard:
-            canvas:
-                Color:
-                    rgb: app.colors['Dark']
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            orientation: 'horizontal'
-            id: key_container
-            size_hint: (1, 0.2)
 
-        Label:
-            id: note_content_label
-            color: hex('#ffffff')
-            text: root.note_text
-            font_size: 48
-            size_hint: (1, 0.8)
-            text_size: root.width, self.height
-            size: self.texture_size
-            valign: 'middle'
-            halign: 'center'
-            mipmap: True
+
+<ContentKeyboard>:
+    orientation: 'vertical'
+    key_container: key_container
+    KeyboardRow:
+        id: key_container
+        orientation: 'horizontal'
+        size_hint: (1, 0.2)
+
+    Label:
+        id: note_content_label
+        color: hex('#ffffff')
+        text: root.note_text
+        font_size: 48
+        size_hint: (1, 0.8)
+        text_size: root.width, self.height
+        size: self.texture_size
+        valign: 'middle'
+        halign: 'center'
+        mipmap: True
+
+<KeyboardRow@BoxLayout>:
+
+    canvas:
+        Color:
+            rgb: app.colors['Dark']
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 
 

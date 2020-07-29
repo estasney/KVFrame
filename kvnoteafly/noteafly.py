@@ -51,26 +51,21 @@ class NoteAFly(App):
         self.session = create_session()
 
     def _setup_data(self):
-        n_notes = self.session.query(Note).count()
-        self.n_notes = n_notes
-        self.notes_data = [note.to_tuple() for note in self.session.query(Note).all()]
+        """Initial load of data"""
+        self.n_notes = self.session.query(Note).count()
+        self.notes_data = [note.to_dict() for note in self.session.query(Note).all()]
         self.note_idx = cycle(range(self.n_notes - 1))
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M %p")
 
     def update_current_note(self, *args, **kwargs):
+        """Update note_data from notes_data base on note_idx"""
         note = self.notes_data[next(self.note_idx)]
-
-        d = dict(
-                note_title=note.note_title,
-                note_text=note.note_text,
-                kbd_buttons=note.kbd_buttons
-                )
-        self._update_property("note_data", d)
+        self._update_property("note_data", note)
 
     def on_note_data(self, *args, **kwargs):
-        self.screen_manager.create_notes(self)
+        self.screen_manager.handle_notes(self)
 
     def build(self):
         self._setup_session()
@@ -78,7 +73,7 @@ class NoteAFly(App):
         self.get_time()
         sm = NoteAppScreenManager()
         self.screen_manager = sm
-        sm.create_notes(app=self)
+
         Clock.schedule_once(self.update_current_note)
         Clock.schedule_interval(self.get_time, 10)
         Clock.schedule_interval(self.update_current_note, 5)
