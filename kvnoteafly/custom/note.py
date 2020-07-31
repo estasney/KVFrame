@@ -16,8 +16,8 @@ class Note(BoxLayout):
             }
 
         content_data = {
-            "text": note_data['text'],
-            "keys_str": note_data['keys_str'],
+            "text":      note_data['text'],
+            "keys_str":  note_data['keys_str'],
             "note_type": note_data['note_type']
             }
 
@@ -46,7 +46,7 @@ class NoteContent(BoxLayout):
                 ContentKeyboard(content_data=content_data)
                 )
 
-    def _set_rst(self, content_data:dict):
+    def _set_rst(self, content_data: dict):
         pass
 
 
@@ -61,13 +61,19 @@ class NoteTitle(BoxLayout):
     def set(self, title_data):
         self.title_text = title_data['title']
 
+
 class ContentText(BoxLayout):
     pass
+
 
 class ContentKeyboard(BoxLayout):
     note_text = StringProperty()
     keyboard_buttons = ListProperty()
     key_container = ObjectProperty()
+
+    HSPACE_MULTI = 0.5
+    HSPACE_MULTI_INNER_SEP = 0.2
+    HSPACE_SINGLE = 0.2
 
     def __init__(self, content_data, **kwargs):
         self.note_text = content_data['text']
@@ -80,25 +86,32 @@ class ContentKeyboard(BoxLayout):
         n_btns = len(self.keyboard_buttons)
         last_btn = n_btns - 1
 
-        # Multiple Keyboard buttons should take up 25% of horizontal Space
-        # Single buttons should take up 10% of horizontal space
+        # Multiple Keyboard buttons should take up 50% of horizontal Space
+        # Inner spacers take 20% of 50%
+        # Single buttons should take up 50% of horizontal space
         # Inner spacing is n_buttons - 1
 
         if n_btns == 1:
-            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
-            self.key_container.add_widget(KeyboardImage(text=self.keyboard_buttons[0], size_hint=(0.1, 1)))
-            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.45, 1)))
+            outer_sep_size = (1 - self.HSPACE_SINGLE) / 2
+
+            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
+            self.key_container.add_widget(
+                KeyboardImage(text=self.keyboard_buttons[0], size_hint=(self.HSPACE_SINGLE, 1)))
+            self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
         else:
-            btn_size_hint_x = 0.25 / (n_btns + (n_btns - 1))
+            outer_sep_size = (1 - self.HSPACE_MULTI) / 2
+            inner_size = (1 - self.HSPACE_MULTI)
+            inner_sep_size = (inner_size * self.HSPACE_MULTI_INNER_SEP) / (n_btns - 1)
+            inner_size_img = (inner_size - inner_sep_size) / n_btns
+
             for i, btn in enumerate(self.keyboard_buttons):
                 if i == 0:
-                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
+                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
                 if n_btns >= i > 0:
-                    self.key_container.add_widget(KeyboardLabelSeparatorInner(size_hint=(btn_size_hint_x, 1)))
-                self.key_container.add_widget(KeyboardImage(text=btn))
+                    self.key_container.add_widget(KeyboardLabelSeparatorInner(size_hint=(inner_sep_size, 1)))
+                self.key_container.add_widget(KeyboardImage(text=btn, time_hint=(i+1), size_hint=(inner_size_img, 1)))
                 if i == last_btn:
-                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(0.375, 1)))
-
+                    self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
 
 
 class ContentRST(BoxLayout):

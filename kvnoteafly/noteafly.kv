@@ -1,5 +1,6 @@
 #:import NoteAppScreen custom.screens
 #:import Note custom.note
+#:import ShaderWidget custom.effects
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import ActionSeparator kivy.uix.actionbar.ActionSeparator
 #:import Factory kivy.factory.Factory
@@ -78,22 +79,24 @@
 <ContentKeyboard>:
     orientation: 'vertical'
     key_container: key_container
-    KeyboardRow:
-        id: key_container
-        orientation: 'horizontal'
-        size_hint: (1, 0.2)
 
     Label:
         id: note_content_label
         color: hex('#ffffff')
         text: root.note_text
-        font_size: 48
-        size_hint: (1, 0.8)
+        font_size: 36
+        size_hint: (1, 0.7)
         text_size: root.width, self.height
         size: self.texture_size
         valign: 'middle'
         halign: 'center'
         mipmap: True
+
+    KeyboardRow:
+        id: key_container
+        orientation: 'horizontal'
+        size_hint: (1, 0.3)
+
 
 <KeyboardRow@BoxLayout>:
 
@@ -103,7 +106,6 @@
         Rectangle:
             pos: self.pos
             size: self.size
-
 
 
 
@@ -123,16 +125,11 @@
             text: ''
             mipmap: True
 
-<KeyboardLabel>
+<KeyboardLabel>:
     background_color: 0,0,0,0
     canvas.before:
 
-        Color:
-            rgb: self.background_color
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [10, ]
+<KeyboardImage>:
 
 <KeyboardLabelSeparatorOuter>:
     background_color: 0,0,0,0
