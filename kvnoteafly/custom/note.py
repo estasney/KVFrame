@@ -1,5 +1,8 @@
+from functools import partial
+
 from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
 
 from custom.keyboard import KeyboardLabelSeparatorOuter, KeyboardLabelSeparatorInner, KeyboardImage
 from db import NoteType
@@ -69,17 +72,30 @@ class ContentText(BoxLayout):
 class ContentKeyboard(BoxLayout):
     note_text = StringProperty()
     keyboard_buttons = ListProperty()
+    keyboard_animated_widgets = ListProperty()
     key_container = ObjectProperty()
 
     HSPACE_MULTI = 0.5
     HSPACE_MULTI_INNER_SEP = 0.2
     HSPACE_SINGLE = 0.2
+    ANIMATION_WINDOW = 2
 
     def __init__(self, content_data, **kwargs):
         self.note_text = content_data['text']
         self.keyboard_buttons = content_data['keys_str'].split(",")
         super(ContentKeyboard, self).__init__(**kwargs)
         self.on_keyboard_buttons()
+
+    @staticmethod
+    def _set_btn_pressed(btn, *args):
+        btn.pressed = True
+
+    def _schedule_animations(self, *args, **kwargs):
+        animation_interval = self.ANIMATION_WINDOW / len(self.keyboard_animated_widgets)
+
+        for i, btn in enumerate(self.keyboard_animated_widgets, start=1):
+            func = partial(self._set_btn_pressed, btn)
+            Clock.schedule_once(func, (animation_interval * i))
 
     def on_keyboard_buttons(self, *args, **kwargs):
         self.key_container.clear_widgets()
@@ -95,8 +111,9 @@ class ContentKeyboard(BoxLayout):
             outer_sep_size = (1 - self.HSPACE_SINGLE) / 2
 
             self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
-            self.key_container.add_widget(
-                KeyboardImage(text=self.keyboard_buttons[0], size_hint=(self.HSPACE_SINGLE, 1)))
+            kb_img = KeyboardImage(text=self.keyboard_buttons[0], size_hint=(self.HSPACE_SINGLE, 1))
+            self.keyboard_animated_widgets.append(kb_img.proxy_ref)
+            self.key_container.add_widget(kb_img)
             self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
         else:
             outer_sep_size = (1 - self.HSPACE_MULTI) / 2
@@ -109,9 +126,13 @@ class ContentKeyboard(BoxLayout):
                     self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
                 if n_btns >= i > 0:
                     self.key_container.add_widget(KeyboardLabelSeparatorInner(size_hint=(inner_sep_size, 1)))
-                self.key_container.add_widget(KeyboardImage(text=btn, time_hint=(i+1), size_hint=(inner_size_img, 1)))
+                kb_img = KeyboardImage(text=btn, size_hint=(inner_size_img, 1))
+                self.keyboard_animated_widgets.append(kb_img.proxy_ref)
+                self.key_container.add_widget(kb_img)
                 if i == last_btn:
                     self.key_container.add_widget(KeyboardLabelSeparatorOuter(size_hint=(outer_sep_size, 1)))
+
+        Clock.schedule_once(self._schedule_animations, 0)
 
 
 class ContentRST(BoxLayout):
