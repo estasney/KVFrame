@@ -1,6 +1,14 @@
+#:import NoteCategoryChooser custom.chooser
+
+
 <NoteAppScreenManager>:
     id: screen_manager
     transition: FadeTransition()
+    NoteCategoryChooserScreen:
+        manager: screen_manager
+        id: chooser_screen
+        name: 'chooser_screen'
+
     NoteCategoryScreen:
         id: note_screen1
         name: 'note_screen1'
@@ -9,7 +17,11 @@
         name: 'note_screen2'
 
 <NoteCategoryChooserScreen>:
+    id: manager_screen
     chooser_object: chooser_object
+    NoteCategoryChooser:
+        manager: manager_screen
+        id: chooser_object
 
 <NoteCategoryScreen>:
     current_note: current_note
