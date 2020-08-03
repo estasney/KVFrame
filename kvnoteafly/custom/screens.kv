@@ -8,10 +8,10 @@
         manager: screen_manager
         id: chooser_screen
         name: 'chooser_screen'
-
     NoteCategoryScreen:
         id: note_screen1
         name: 'note_screen1'
+
     NoteCategoryScreen:
         id: note_screen2
         name: 'note_screen2'
@@ -19,8 +19,10 @@
 <NoteCategoryChooserScreen>:
     id: manager_screen
     chooser_object: chooser_object
+    categories: app.note_categories
     NoteCategoryChooser:
         manager: manager_screen
+        categories: manager_screen.categories
         id: chooser_object
 
 <NoteCategoryScreen>:

@@ -1,5 +1,6 @@
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.app import App
 
 from utils import import_kv
 
@@ -10,29 +11,27 @@ class NoteAppScreenManager(ScreenManager):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    # def on_touch_down(self, touch):
-    #     self.current = 'note_screen1'
-
-    def testing_chooser(self):
         self.current = 'chooser_screen'
-        self.ids[self.current].set_categories(['A', 'B'])
+
+    def category_selected(self, category):
+        App.get_running_app().active_category = category.text
 
     def handle_notes(self, app):
         target = 'note_screen2' if self.current == 'note_screen1' else 'note_screen1'
         self.ids[target].set_note_content(app.note_data)
-        self.testing_chooser()
+        self.current = target
 
 
 class NoteCategoryChooserScreen(Screen):
     chooser_object = ObjectProperty()
     manager = ObjectProperty()
+    categories = ListProperty()
 
-    def set_categories(self, categories):
-        self.chooser_object.set_categories(categories)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def category_selected(self, category):
-        self.manager.current = 'note_screen1'
+        self.manager.category_selected(category)
 
 
 class NoteCategoryScreen(Screen):

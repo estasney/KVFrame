@@ -22,10 +22,16 @@ class NoteAFly(App):
 
     session = None
     n_notes = 0
+    n_cat_notes = 0
     note_idx = 0
     notes_data = None
+    notes_data_categorical = None
+    active_note_scheduler = None
 
     screen_manager = ObjectProperty()
+    note_categories = ListProperty()
+
+    active_category = StringProperty()
 
     bg_color_r = NumericProperty(0)
     bg_color_g = NumericProperty(0)
@@ -54,15 +60,23 @@ class NoteAFly(App):
         """Initial load of data"""
         self.n_notes = self.session.query(Note).count()
         self.notes_data = [note.to_dict() for note in self.session.query(Note).all()]
-        self.note_idx = cycle(range(self.n_notes - 1))
+        self.note_categories = list(set([note_dict['category'] for note_dict in self.notes_data]))
 
     def get_time(self, *args, **kwargs):
         self.clock_time = datetime.strftime(datetime.now(), "%I:%M %p")
 
     def update_current_note(self, *args, **kwargs):
         """Update note_data from notes_data base on note_idx"""
-        note = self.notes_data[next(self.note_idx)]
+        note = self.notes_data_categorical[next(self.note_idx)]
         self._update_property("note_data", note)
+
+    def on_active_category(self, instance, value):
+        self.notes_data_categorical = [note for note in self.notes_data if note['category']==value]
+        self.n_cat_notes = len(self.notes_data_categorical)
+        self.note_idx = cycle(range(self.n_cat_notes - 1))
+        Clock.schedule_once(self.update_current_note, 0)
+        if self.active_note_scheduler is None:
+            self.active_note_scheduler = Clock.schedule_interval(self.update_current_note, 5)
 
     def on_note_data(self, *args, **kwargs):
         self.screen_manager.handle_notes(self)
@@ -73,10 +87,7 @@ class NoteAFly(App):
         self.get_time()
         sm = NoteAppScreenManager()
         self.screen_manager = sm
-
-        Clock.schedule_once(self.update_current_note)
         Clock.schedule_interval(self.get_time, 10)
-        Clock.schedule_interval(self.update_current_note, 5)
         return sm
 
 
