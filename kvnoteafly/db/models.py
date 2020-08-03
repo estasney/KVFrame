@@ -88,6 +88,9 @@ class NoteType(IntEnum):
     KEYBOARD_NOTE = 1
     RST_NOTE = 2
 
+class NoteCategory(IntEnum):
+    GENERAL = 0
+
 
 class Note(Base, DictMixin):
     __tablename__ = 'notes'
@@ -96,6 +99,7 @@ class Note(Base, DictMixin):
     title = Column(String(128))
     keys_str = Column(String(128))
     text = Column(String(1024))
+    _category = Column(Integer, default=0)
     _note_type = Column(Integer, default=0)
 
     @property
@@ -121,3 +125,15 @@ class Note(Base, DictMixin):
     @note_type.setter
     def note_type(self, nt: NoteType):
         self._note_type = nt.value
+
+    @property
+    def category(self) -> int:
+        return self._category
+
+    @category.getter
+    def category(self):
+        return NoteCategory(self._category)
+
+    @category.setter
+    def category(self, category: NoteCategory):
+        self._category = category.value
