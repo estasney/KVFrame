@@ -6,7 +6,9 @@ from kivy.clock import Clock
 
 from custom.keyboard import KeyboardLabelSeparatorOuter, KeyboardLabelSeparatorInner, KeyboardImage
 from db import NoteType
+from utils import import_kv
 
+import_kv(__file__)
 
 class Note(BoxLayout):
     note_title = ObjectProperty()

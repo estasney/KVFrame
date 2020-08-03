@@ -6,133 +6,15 @@
 #:import Factory kivy.factory.Factory
 #:import hex kivy.utils.get_color_from_hex
 #:import rgba kivy.utils.rgba
-
-<NoteAppScreenManager>:
-    id: screen_manager
-    transition: FadeTransition()
-    NoteScreen:
-        id: note_screen1
-        name: 'note_screen1'
-    NoteScreen:
-        id: note_screen2
-        name: 'note_screen2'
-
-<NoteScreen>:
-    current_note: current_note
-    Note:
-        id: current_note
-
-
-<Note>:
-    id: note_container
-    note_title: note_title
-    note_content: note_content
-    note_tags: note_tags
-
-    BoxLayout:
-        orientation: 'vertical'
-        NoteTitle:
-            id: note_title
-            size_hint: 1, 0.1
-        HSeparator:
-            size_hint: 1, 0.01
-        NoteContent:
-            id: note_content
-            size_hint: 1, 0.7
-        HSeparator:
-            size_hint: 1, 0.01
-        NoteTags:
-            id: note_tags
-            size_hint: 1, 0.1
-
-<NoteTitle>:
-    id: note_title
-    canvas:
-        Color:
-            rgb: app.colors['Dark']
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    FloatLayout:
-        Label:
-            id: note_title_label
-            color: hex('#ffffff')
-            text: root.title_text
-            bold: True
-            font_size: 28
-            pos_hint: {"x": 0, "y": 0}
-            size_hint: (0.3, 1)
-            mipmap: True
-
-<NoteContent>:
-    id: note_content
-    orientation: 'vertical'
-    canvas:
-        Color:
-            rgb: app.colors['Primary']
-        Rectangle:
-            pos: self.pos
-            size: self.size
+#:import BackButton custom.buttons
 
 
 
-<ContentKeyboard>:
-    orientation: 'vertical'
-    key_container: key_container
-
-    Label:
-        id: note_content_label
-        color: hex('#ffffff')
-        text: root.note_text
-        font_size: 36
-        size_hint: (1, 0.7)
-        text_size: root.width, self.height
-        size: self.texture_size
-        valign: 'middle'
-        halign: 'center'
-        mipmap: True
-
-    KeyboardRow:
-        id: key_container
-        orientation: 'horizontal'
-        size_hint: (1, 0.3)
-
-
-<KeyboardRow@BoxLayout>:
-
-    canvas:
-        Color:
-            rgb: app.colors['Dark']
-        Rectangle:
-            pos: self.pos
-            size: self.size
 
 
 
-<NoteTags>:
-    id: note_tags
-    canvas:
-        Color:
-            rgb: app.colors['Dark']
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    BoxLayout:
-        orientation: 'vertical'
-        Label:
-            id: note_tag_label
-            color: hex('#000000')
-            text: ''
-            mipmap: True
 
-<KeyboardLabel>:
-    background_color: 0,0,0,0
-    canvas.before:
 
-<KeyboardImage>:
-
-<KeyboardLabelSeparatorOuter>:
-    background_color: 0,0,0,0
 
 <Separator@Widget>
 <HSeparator@Separator>

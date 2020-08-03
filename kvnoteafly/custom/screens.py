@@ -1,6 +1,9 @@
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
+from utils import import_kv
+
+import_kv(__file__)
 
 class NoteAppScreenManager(ScreenManager):
 
@@ -16,7 +19,11 @@ class NoteAppScreenManager(ScreenManager):
         self.current = target
 
 
-class NoteScreen(Screen):
+class NoteCategoryChooserScreen(Screen):
+    chooser_object = ObjectProperty()
+
+
+class NoteCategoryScreen(Screen):
     current_note = ObjectProperty()
 
     def set_note_content(self, note_data: dict):

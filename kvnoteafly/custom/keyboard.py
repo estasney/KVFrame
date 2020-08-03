@@ -13,6 +13,9 @@ from kivy.utils import get_color_from_hex
 from custom.effects import ShaderTemplateMixin
 from kivy.animation import Animation
 
+from utils import import_kv
+
+import_kv(__file__)
 
 class KeyboardLabelSeparatorOuter(Widget):
     background_color = get_color_from_hex("#0e0e0e")

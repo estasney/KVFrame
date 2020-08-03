@@ -1,0 +1,19 @@
+<NoteAppScreenManager>:
+    id: screen_manager
+    transition: FadeTransition()
+    NoteCategoryScreen:
+        id: note_screen1
+        name: 'note_screen1'
+    NoteCategoryScreen:
+        id: note_screen2
+        name: 'note_screen2'
+
+<NoteCategoryChooserScreen>:
+    chooser_object: chooser_object
+
+<NoteCategoryScreen>:
+    current_note: current_note
+    Note:
+        id: current_note
+
+
