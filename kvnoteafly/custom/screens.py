@@ -14,7 +14,13 @@ class NoteAppScreenManager(ScreenManager):
         self.current = 'chooser_screen'
 
     def category_selected(self, category):
-        App.get_running_app().active_category = category.text
+        App.get_running_app().note_category = category.text
+
+    def handle_app_display_state(self, app):
+        if app.display_state == "choose":
+            self.current = "chooser_screen"
+        else:
+            self.current = "note_screen2"
 
     def handle_notes(self, app):
         target = 'note_screen2' if self.current == 'note_screen1' else 'note_screen1'

@@ -89,7 +89,7 @@ class NoteType(IntEnum):
     RST_NOTE = 2
 
 class NoteCategory(IntEnum):
-    GENERAL = 0
+    General = 0
 
 
 class Note(Base, DictMixin):

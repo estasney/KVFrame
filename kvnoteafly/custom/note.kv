@@ -1,3 +1,5 @@
+#:import App kivy.app.App
+
 <Note>:
     id: note_container
     note_title: note_title
@@ -49,6 +51,7 @@
             mipmap: True
             opacity: 1 if self.state == 'normal' else 0.8
             size_hint: (0.3, 1)
+            on_release: App.get_running_app().note_category = ''
 
 
 
