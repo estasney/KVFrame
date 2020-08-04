@@ -37,9 +37,7 @@ class ImageButton(ButtonBehavior, Image):
         distance = Vector(x, y).distance(self.center)
         return distance <= self.norm_image_size[0] / 2
 
-    def on_press(self):
-        print("pressed")
-        return True
+
 
 
 class BackButton(ImageButton):

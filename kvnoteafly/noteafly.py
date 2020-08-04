@@ -87,29 +87,29 @@ class NoteAFly(App):
     def next_note(self, *args, **kwargs):
         """Update `self.note_data` from `self.notes_data`"""
         note = self.notes_data_categorical[next(self.note_idx)]
-        self._update_property("note_data", note)
+        self.note_data = note
 
     def on_display_state(self, instance, value):
         self.screen_manager.handle_app_display_state(self)
 
     def on_note_category(self, instance, value):
         if not value:
-            self.display_state = "choose"
+
             self.notes_data_categorical = []
             self.note_idx = None
             if self.next_note_scheduler:
                 self.next_note_scheduler.cancel()
-
+            self.display_state = "choose"
         else:
-            self.display_state = "display"
+
             self.notes_data_categorical = [note for note in self.notes_data if note['category'] == value]
             self.note_idx = cycle(range(len(self.notes_data_categorical) - 1))
             if not self.next_note_scheduler:
                 self.next_note_scheduler = Clock.schedule_interval(self.next_note, 5)
             else:
                 self.next_note_scheduler()
-            Clock.schedule_once(self.next_note, 1)
-
+            self.next_note()
+            self.display_state = "display"
 
     def on_note_data(self, *args, **kwargs):
         self.screen_manager.handle_notes(self)
