@@ -103,7 +103,7 @@ class NoteAFly(App):
         else:
 
             self.notes_data_categorical = [note for note in self.notes_data if note['category'] == value]
-            self.note_idx = cycle(range(len(self.notes_data_categorical) - 1))
+            self.note_idx = cycle(range(len(self.notes_data_categorical)))
             if not self.next_note_scheduler:
                 self.next_note_scheduler = Clock.schedule_interval(self.next_note, 5)
             else:

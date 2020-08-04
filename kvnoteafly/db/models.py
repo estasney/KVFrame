@@ -90,6 +90,7 @@ class NoteType(IntEnum):
 
 class NoteCategory(IntEnum):
     General = 0
+    Python = 1
 
 
 class Note(Base, DictMixin):
@@ -108,7 +109,10 @@ class Note(Base, DictMixin):
 
     @keys.getter
     def keys(self):
-        return self.keys_str.split(",")
+        if self.keys_str:
+            return self.keys_str.split(",")
+        else:
+            return None
 
     @keys.setter
     def keys(self, kbd_keys):

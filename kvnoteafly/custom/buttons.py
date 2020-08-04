@@ -38,8 +38,6 @@ class ImageButton(ButtonBehavior, Image):
         return distance <= self.norm_image_size[0] / 2
 
 
-
-
 class BackButton(ImageButton):
 
     def __init__(self, *args, **kwargs):

@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.stacklayout import StackLayout
 
+from custom.buttons import RoundedButton
 from utils import import_kv
 
 import_kv(__file__)
@@ -26,7 +27,7 @@ class NoteCategoryChooser(StackLayout):
             self.add_widget(cat)
 
 
-class NoteCategoryButton(Button):
+class NoteCategoryButton(RoundedButton):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
