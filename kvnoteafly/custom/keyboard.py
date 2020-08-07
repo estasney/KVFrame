@@ -2,17 +2,15 @@ import os
 from functools import partial
 
 from kivy.clock import Clock
-from kivy.core.window import Window
-from kivy.graphics.instructions import RenderContext
 from kivy.properties import BooleanProperty, StringProperty, ListProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.uix.effectwidget import EffectWidget
+
 from kivy.utils import get_color_from_hex
 
-from custom.effects import ShaderTemplateMixin
+
 from kivy.animation import Animation
 
 from utils import import_kv

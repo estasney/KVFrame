@@ -1,7 +1,5 @@
-from kivy.properties import StringProperty, ObjectProperty, ListProperty
-from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.stacklayout import StackLayout
 
 from custom.buttons import RoundedButton
