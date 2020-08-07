@@ -89,8 +89,9 @@ class NoteType(IntEnum):
     RST_NOTE = 2
 
 class NoteCategory(IntEnum):
-    General = 0
+    Windows = 0
     Python = 1
+    Chrome = 2
 
 
 class Note(Base, DictMixin):
