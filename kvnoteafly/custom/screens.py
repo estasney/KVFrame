@@ -22,7 +22,6 @@ class NoteAppScreenManager(ScreenManager):
         App.get_running_app().note_category = category.text
 
     def handle_app_display_state(self, app):
-        print("App Changed Display State")
         if app.display_state == "choose":  # Show the Category Selection Screen
             self.current = "chooser_screen"
         else:
@@ -30,7 +29,6 @@ class NoteAppScreenManager(ScreenManager):
 
     def handle_notes(self, app):
         last_active, next_active = next(self.note_screen_cycler)
-        print(f"App updated notes. Last Active: {last_active}, Next Active: {next_active}")
         target = f"note_screen{next_active}"
         self.ids[target].set_note_content(app.note_data)
         self.current = target
