@@ -8,6 +8,7 @@ from utils import import_kv
 
 import_kv(__file__)
 
+
 class Note(BoxLayout):
     note_title = ObjectProperty()
     note_content = ObjectProperty()
@@ -38,7 +39,7 @@ class NoteContent(BoxLayout):
             self._set_text(content_data)
         elif content_data['note_type'] == NoteType.KEYBOARD_NOTE.name:
             self._set_keyboard(content_data)
-        elif content_data['note_type'] == NoteType.RST_NOTE.name:
+        elif content_data['note_type'] == NoteType.CODE_NOTE.name:
             self._set_rst(content_data)
 
     def _set_text(self, content_data: dict):

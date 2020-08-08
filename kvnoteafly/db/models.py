@@ -86,12 +86,13 @@ class DictMixin:
 class NoteType(IntEnum):
     TEXT_NOTE = 0
     KEYBOARD_NOTE = 1
-    RST_NOTE = 2
+    CODE_NOTE = 2
 
 class NoteCategory(IntEnum):
     Windows = 0
     Python = 1
     Chrome = 2
+    SQLAlchemy = 3
 
 
 class Note(Base, DictMixin):
