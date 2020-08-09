@@ -90,7 +90,8 @@ class NoteAFly(App):
         self.note_data = note
 
     def on_display_state(self, instance, value):
-        self.screen_manager.handle_app_display_state(self)
+        # self.screen_manager.handle_app_display_state(self)
+        pass
 
     def on_note_category(self, instance, value):
         if not value:
@@ -116,7 +117,7 @@ class NoteAFly(App):
 
     def build(self):
         self._setup_data()
-        sm = NoteAppScreenManager()
+        sm = NoteAppScreenManager(self)
         self.screen_manager = sm
         return sm
 
