@@ -37,7 +37,7 @@ class KeyboardImage(Image):
     def __init__(self, **kwargs):
         text = kwargs.pop('text')
         # src = os.path.join("static", "keys", text.lower()) + ".png"
-        src = os.path.join("atlas://static", "keys", "keys", text.lower())
+        src = f"atlas://static/keys/keys/{text.lower()}"
         super().__init__(source=src, **kwargs)
 
     def on_pressed(self, *args, **kwargs):
