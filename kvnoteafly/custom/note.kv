@@ -42,7 +42,6 @@
             mipmap: True
         PlayStateButton:
             id: play_state_button
-            current_source: root.play_state if root.play_state else App.get_running_app().play_state
             canvas.before:
                 Color:
                     rgb: app.colors['Primary']

@@ -34,13 +34,8 @@ class NoteAppScreenManager(ScreenManager):
             self.handle_notes()
 
     def handle_app_play_state(self, instance, value):
-        print("Play State")
+        print(f"ScreenManager play state: {value}")
         self.play_state = value
-        for widget in self.walk():
-            if hasattr(widget, "play_state"):
-                print("Widget Set")
-                widget.play_state = value
-
 
     def handle_notes(self, *args, **kwargs):
         last_active, next_active = next(self.note_screen_cycler)

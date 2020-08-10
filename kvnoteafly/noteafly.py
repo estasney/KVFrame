@@ -97,12 +97,13 @@ class NoteAFly(App):
         self.note_data = note
 
     def on_play_state(self, instance, value):
-        # self.screen_manager.handle_app_display_state(self)
-        pass
+        if value == "pause":
+            self.next_note_scheduler.cancel()
+        else:
+            self.next_note_scheduler()
 
     def on_note_category(self, instance, value):
         if not value:
-
             self.notes_data_categorical = []
             self.note_idx = None
             if self.next_note_scheduler:

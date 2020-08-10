@@ -5,9 +5,8 @@ from kivy.uix.image import Image
 from kivy.utils import get_color_from_hex
 from kivy.uix.button import Button
 from kivy.vector import Vector
-from kivy.properties import StringProperty, ListProperty, DictProperty
-
-from kvweatherdash.custom import IntegerProperty
+from kivy.properties import StringProperty, ListProperty, DictProperty, ObjectProperty
+from kivy.app import App
 
 
 class RoundedButton(Button):
@@ -58,18 +57,26 @@ class DynamicImageButton(ButtonBehavior, Image):
 class PlayStateButton(DynamicImageButton):
     sources = DictProperty()
     current_source = StringProperty()
+    app = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
+        self.app = App.get_running_app()
+        self.app.bind(play_state=self.setter('current_source'))
         super().__init__(current_source="play",
                          sources={
                              "play":  os.path.join("static", "icons", "play.png"),
                              "pause": os.path.join("static", "icons", "pause.png")
                              })
 
+
+
+
+
+
     def on_current_source(self, old, new):
         self.source = self.sources[new]
         self.reload()
-        print("PlayState")
+        print("PlayStateButton reloaded")
 
 
 class BackButton(ImageButton):
