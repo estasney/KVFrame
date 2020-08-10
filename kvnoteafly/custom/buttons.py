@@ -1,12 +1,16 @@
 import os
 
+from kivy.app import App
+from kivy.properties import StringProperty, DictProperty, ObjectProperty
 from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.utils import get_color_from_hex
-from kivy.uix.button import Button
 from kivy.vector import Vector
-from kivy.properties import StringProperty, ListProperty, DictProperty, ObjectProperty
-from kivy.app import App
+
+from utils import import_kv
+
+import_kv(__file__)
 
 
 class RoundedButton(Button):
@@ -64,22 +68,28 @@ class PlayStateButton(DynamicImageButton):
         self.app.bind(play_state=self.setter('current_source'))
         super().__init__(current_source="play",
                          sources={
-                             "play":  os.path.join("static", "icons", "play.png"),
-                             "pause": os.path.join("static", "icons", "pause.png")
+                             "play":  "atlas://static/icons/button_bar/play",
+                             "pause": "atlas://static/icons/button_bar/pause"
                              })
-
-
-
-
-
 
     def on_current_source(self, old, new):
         self.source = self.sources[new]
-        self.reload()
         print("PlayStateButton reloaded")
 
 
 class BackButton(ImageButton):
 
     def __init__(self, *args, **kwargs):
-        super(BackButton, self).__init__(src=os.path.join("static", "icons", "back_arrow.png"), *args, **kwargs)
+        super().__init__(src="atlas://static/icons/button_bar/back")
+
+
+class ForwardButton(ImageButton):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(src="atlas://static/icons/button_bar/forward")
+
+
+class ReturnButton(ImageButton):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(src="atlas://static/icons/button_bar/back_arrow")

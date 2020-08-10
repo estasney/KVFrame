@@ -1,0 +1,30 @@
+#:import VSeparator custom.separator
+
+
+<ButtonBar@BoxLayout>:
+    orientation: "horizontal"
+    canvas.before:
+        Color:
+            rgb: app.colors['Primary']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BackButton:
+    VSeparator:
+    PlayStateButton:
+        color: [1, 1, 1, 1] if self.current_source == 'play' else [0.86666, 0.247, 0.0627, 1]
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: App.get_running_app().toggle_play_state()
+        mipmap: True
+    VSeparator:
+    ForwardButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        mipmap: True
+    VSeparator:
+    ReturnButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        mipmap: True
+        on_release: App.get_running_app().note_category = ''
+
+
+
