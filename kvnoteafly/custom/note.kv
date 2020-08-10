@@ -40,18 +40,32 @@
             pos_hint: {"x": 0, "y": 0}
             size_hint: (0.7, 1)
             mipmap: True
-        BackButton:
+        PlayStateButton:
+            id: play_state_button
+            current_source: root.play_state if root.play_state else App.get_running_app().play_state
             canvas.before:
                 Color:
                     rgb: app.colors['Primary']
                 RoundedRectangle:
                     pos: (self.center_x - self.norm_image_size[0] / 2, self.center_y - self.norm_image_size[1] / 2)
                     size: self.norm_image_size
-
+            mimmap: True
+            opacity: 1 if self.state == 'normal' else 0.8
+            size_hint: (0.2, 1)
+            on_release: App.get_running_app().toggle_play_state()
+        BackButton:
+            id: back_button
+            canvas.before:
+                Color:
+                    rgb: app.colors['Primary']
+                RoundedRectangle:
+                    pos: (self.center_x - self.norm_image_size[0] / 2, self.center_y - self.norm_image_size[1] / 2)
+                    size: self.norm_image_size
             mipmap: True
             opacity: 1 if self.state == 'normal' else 0.8
-            size_hint: (0.3, 1)
+            size_hint: (0.2, 1)
             on_release: App.get_running_app().note_category = ''
+
 
 
 <NoteContent>:

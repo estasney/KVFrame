@@ -58,6 +58,8 @@ class NoteContent(BoxLayout):
 
 class NoteTitle(BoxLayout):
     title_text = StringProperty()
+    play_state = StringProperty()
+    play_state_button = ObjectProperty()
 
     def __init__(self, **kwargs):
         if 'note_title' in kwargs:
@@ -66,6 +68,10 @@ class NoteTitle(BoxLayout):
 
     def set(self, title_data):
         self.title_text = title_data['title']
+
+    def on_play_state(self, instance, value):
+        pass
+
 
 
 class ContentText(BoxLayout):

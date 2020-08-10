@@ -5,7 +5,9 @@ from kivy.uix.image import Image
 from kivy.utils import get_color_from_hex
 from kivy.uix.button import Button
 from kivy.vector import Vector
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ListProperty, DictProperty
+
+from kvweatherdash.custom import IntegerProperty
 
 
 class RoundedButton(Button):
@@ -36,6 +38,38 @@ class ImageButton(ButtonBehavior, Image):
     def collide_point(self, x, y):
         distance = Vector(x, y).distance(self.center)
         return distance <= self.norm_image_size[0] / 2
+
+
+class DynamicImageButton(ButtonBehavior, Image):
+    sources = DictProperty()
+    current_source = StringProperty()
+
+    def __init__(self, current_source: str, sources: dict, *args, **kwargs):
+        self.sources = sources
+        self.current_source = current_source
+        self.source = self.sources[self.current_source]
+        super().__init__()
+
+    def collide_point(self, x, y):
+        distance = Vector(x, y).distance(self.center)
+        return distance <= self.norm_image_size[0] / 2
+
+
+class PlayStateButton(DynamicImageButton):
+    sources = DictProperty()
+    current_source = StringProperty()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(current_source="play",
+                         sources={
+                             "play":  os.path.join("static", "icons", "play.png"),
+                             "pause": os.path.join("static", "icons", "pause.png")
+                             })
+
+    def on_current_source(self, old, new):
+        self.source = self.sources[new]
+        self.reload()
+        print("PlayState")
 
 
 class BackButton(ImageButton):

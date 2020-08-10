@@ -2,7 +2,7 @@ from itertools import cycle
 
 from cytoolz import sliding_window
 from kivy.app import App
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ObjectProperty, ListProperty, OptionProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from utils import import_kv
@@ -13,6 +13,7 @@ import_kv(__file__)
 class NoteAppScreenManager(ScreenManager):
 
     app = ObjectProperty()
+    play_state = StringProperty()
 
     def __init__(self, app, **kwargs):
         super().__init__(**kwargs)
@@ -21,15 +22,25 @@ class NoteAppScreenManager(ScreenManager):
         self.last_note_screen = None
         self.app = app
         self.app.bind(display_state=self.handle_app_display_state)
+        self.app.bind(play_state=self.handle_app_play_state)
 
     def category_selected(self, category):
         App.get_running_app().note_category = category.text
 
-    def handle_app_display_state(self, old, new):
+    def handle_app_display_state(self, instance, new):
         if new == "choose":  # Show the Category Selection Screen
             self.current = "chooser_screen"
         else:
             self.handle_notes()
+
+    def handle_app_play_state(self, instance, value):
+        print("Play State")
+        self.play_state = value
+        for widget in self.walk():
+            if hasattr(widget, "play_state"):
+                print("Widget Set")
+                widget.play_state = value
+
 
     def handle_notes(self, *args, **kwargs):
         last_active, next_active = next(self.note_screen_cycler)
@@ -41,7 +52,6 @@ class NoteAppScreenManager(ScreenManager):
 
 class NoteCategoryChooserScreen(Screen):
     chooser_object = ObjectProperty()
-    manager = ObjectProperty()
     categories = ListProperty()
 
     def __init__(self, **kwargs):

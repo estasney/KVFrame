@@ -8,7 +8,7 @@ from datetime import datetime
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import ColorProperty, OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty
+from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty)
 
 from custom.screens import NoteAppScreenManager
 from db import create_session, Note
@@ -59,6 +59,7 @@ class NoteAFly(App):
     next_note_scheduler = ObjectProperty()
 
     display_state = OptionProperty("choose", options=["choose", "display"])
+    play_state = OptionProperty("play", options=["play", "pause"])
 
     screen_manager = ObjectProperty()
 
@@ -84,12 +85,18 @@ class NoteAFly(App):
         self.notes_data = [note.to_dict() for note in self.db_session.query(Note).all()]
         self.note_categories = list(set([note_dict['category'] for note_dict in self.notes_data]))
 
+    def toggle_play_state(self, *args, **kwargs):
+        if self.play_state == "play":
+            self.play_state = "pause"
+        else:
+            self.play_state = "play"
+
     def next_note(self, *args, **kwargs):
         """Update `self.note_data` from `self.notes_data`"""
         note = self.notes_data_categorical[next(self.note_idx)]
         self.note_data = note
 
-    def on_display_state(self, instance, value):
+    def on_play_state(self, instance, value):
         # self.screen_manager.handle_app_display_state(self)
         pass
 
