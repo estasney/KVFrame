@@ -1,17 +1,49 @@
-
-import sys
 import os
-from dotenv import load_dotenv
+import sys
 import threading
-from itertools import cycle
-from datetime import datetime
 
+from dotenv import load_dotenv
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty)
+from functools import partial
 
 from custom.screens import NoteAppScreenManager
 from db import create_session, Note
+
+
+class NoteIndex:
+    """
+    Handles indexing notes so that we can always call `next` or `previous`
+
+    As with `range`, `end` is not inclusive
+    """
+
+    def __init__(self, size: int):
+        self.size = size
+        self.start = 0
+        self.end = max([0, (size - 1)])
+        self.current = 0
+
+    def next(self) -> int:
+        if self.end == 0:
+            return 0
+        elif self.current == self.end:
+            self.current = 0
+            return self.current
+        else:
+            self.current += 1
+            return self.current
+
+    def previous(self) -> int:
+        if self.end == 0:
+            return 0
+        elif self.current == 0:
+            self.current = self.end
+            return self.current
+        else:
+            self.current -= 1
+            return self.current
 
 
 class NoteAFly(App):
@@ -85,15 +117,27 @@ class NoteAFly(App):
         self.notes_data = [note.to_dict() for note in self.db_session.query(Note).all()]
         self.note_categories = list(set([note_dict['category'] for note_dict in self.notes_data]))
 
+    def paginate(self, value):
+        self.next_note_scheduler.cancel()
+        Clock.schedule_once(partial(self.paginate_note, direction=value), 0)
+        if self.play_state == "play":
+            self.next_note_scheduler()
+
+
+
     def toggle_play_state(self, *args, **kwargs):
         if self.play_state == "play":
             self.play_state = "pause"
         else:
             self.play_state = "play"
 
-    def next_note(self, *args, **kwargs):
+    def paginate_note(self, *args, **kwargs):
+        direction = kwargs.get('direction', 1)
         """Update `self.note_data` from `self.notes_data`"""
-        note = self.notes_data_categorical[next(self.note_idx)]
+        if direction > 0:
+            note = self.notes_data_categorical[self.note_idx.next()]
+        else:
+            note = self.notes_data_categorical[self.note_idx.previous()]
         self.note_data = note
 
     def on_play_state(self, instance, value):
@@ -112,12 +156,12 @@ class NoteAFly(App):
         else:
 
             self.notes_data_categorical = [note for note in self.notes_data if note['category'] == value]
-            self.note_idx = cycle(range(len(self.notes_data_categorical)))
+            self.note_idx = NoteIndex(len(self.notes_data_categorical))
             if not self.next_note_scheduler:
-                self.next_note_scheduler = Clock.schedule_interval(self.next_note, 5)
+                self.next_note_scheduler = Clock.schedule_interval(self.paginate_note, 5)
             else:
                 self.next_note_scheduler()
-            self.next_note()
+            self.paginate_note()
             self.display_state = "display"
 
     def on_note_data(self, *args, **kwargs):
