@@ -94,6 +94,7 @@ class NoteCategory(IntEnum):
     Chrome = 2
     SQLAlchemy = 3
     PyCharm = 4
+    Jinja = 5
 
 
 class Note(Base, DictMixin):
