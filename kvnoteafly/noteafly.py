@@ -150,7 +150,6 @@ class NoteAFly(App):
 
     def on_note_category(self, instance, value):
         if not value:
-            if self.play_state == 'pause':
             self.notes_data_categorical = []
             self.note_idx = None
             if self.next_note_scheduler:
