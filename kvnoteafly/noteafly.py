@@ -5,7 +5,8 @@ import threading
 from dotenv import load_dotenv
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty)
+from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty,
+                             NumericProperty)
 from functools import partial
 
 from custom.screens import NoteAppScreenManager
@@ -92,6 +93,7 @@ class NoteAFly(App):
 
     display_state = OptionProperty("choose", options=["choose", "display"])
     play_state = OptionProperty("play", options=["play", "pause"])
+    paginate_interval = NumericProperty(7)
 
     screen_manager = ObjectProperty()
 
@@ -159,7 +161,7 @@ class NoteAFly(App):
             self.notes_data_categorical = [note for note in self.notes_data if note['category'] == value]
             self.note_idx = NoteIndex(len(self.notes_data_categorical))
             if not self.next_note_scheduler:
-                self.next_note_scheduler = Clock.schedule_interval(self.paginate_note, 5)
+                self.next_note_scheduler = Clock.schedule_interval(self.paginate_note, self.paginate_interval)
                 if self.play_state == 'pause':
                     self.next_note_scheduler.cancel()
             else:
