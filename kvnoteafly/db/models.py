@@ -95,6 +95,7 @@ class NoteCategory(IntEnum):
     SQLAlchemy = 3
     PyCharm = 4
     Jinja = 5
+    Pandas = 6
 
 
 class Note(Base, DictMixin):
