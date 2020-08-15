@@ -2,6 +2,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from custom.keyboard import ContentKeyboard
+from custom.code import ContentCode
 from custom.rst import ContentRST
 from db import NoteType
 from utils import import_kv
@@ -43,7 +44,9 @@ class NoteContent(BoxLayout):
             self._set_rst(content_data)
 
     def _set_text(self, content_data: dict):
-        pass
+        self.add_widget(
+                ContentRST(content_data=content_data)
+                )
 
     def _set_keyboard(self, content_data: dict):
         self.add_widget(
@@ -52,7 +55,7 @@ class NoteContent(BoxLayout):
 
     def _set_rst(self, content_data: dict):
         self.add_widget(
-                ContentRST(content_data=content_data)
+                ContentCode(content_data=content_data)
                 )
 
 
@@ -71,11 +74,6 @@ class NoteTitle(BoxLayout):
 
     def on_play_state(self, instance, value):
         pass
-
-
-
-class ContentText(BoxLayout):
-    pass
 
 
 class NoteTags(BoxLayout):
