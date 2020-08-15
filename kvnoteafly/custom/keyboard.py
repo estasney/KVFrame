@@ -40,10 +40,13 @@ class KeyboardImage(Image):
         src = f"atlas://static/keys/keys/{text.lower()}"
         super().__init__(source=src, **kwargs)
 
-    def on_pressed(self, *args, **kwargs):
-        animation_press = Animation(y=self.y - 7, duration=0.15, t='out_cubic')
-        animation_press += Animation(y=self.y, duration=0.15, t='out_cubic')
+    def on_pressed(self, obj, value):
+        if value:
+            animation_press = Animation(y=self.y - 7, duration=0.15, t='out_cubic')
+        else:
+            animation_press = Animation(y=self.y + 7, duration=0.15, t='out_cubic')
         animation_press.start(self)
+
 
 
 class KeyboardLabel(Label):
@@ -75,15 +78,25 @@ class ContentKeyboard(BoxLayout):
         self.on_keyboard_buttons()
 
     @staticmethod
-    def _set_btn_pressed(btn, *args):
-        btn.pressed = True
+    def _set_btn_pressed(*args):
+        btn, value, *_ = args
+        btn.pressed = value
+
+    @staticmethod
+    def _unset_btns_pressed(*args):
+        btns, *_ = args
+        for btn in btns:
+            ContentKeyboard._set_btn_pressed(btn, False)
 
     def _schedule_animations(self, *args, **kwargs):
         animation_interval = self.ANIMATION_WINDOW / len(self.keyboard_animated_widgets)
 
         for i, btn in enumerate(self.keyboard_animated_widgets, start=1):
-            func = partial(self._set_btn_pressed, btn)
+            func = partial(self._set_btn_pressed, btn, True)
             Clock.schedule_once(func, (animation_interval * i))
+
+        Clock.schedule_once(partial(self._unset_btns_pressed, self.keyboard_animated_widgets), self.ANIMATION_WINDOW + 1)
+
 
     def on_keyboard_buttons(self, *args, **kwargs):
         self.key_container.clear_widgets()
