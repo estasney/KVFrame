@@ -1,13 +1,13 @@
 import os
 import sys
 import threading
+from functools import partial
 
 from dotenv import load_dotenv
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty,
                              NumericProperty)
-from functools import partial
 
 from custom.screens import NoteAppScreenManager
 from db import create_session, Note
@@ -20,11 +20,11 @@ class NoteIndex:
     As with `range`, `end` is not inclusive
     """
 
-    def __init__(self, size: int):
+    def __init__(self, size: int, current=0):
         self.size = size
         self.start = 0
         self.end = max([0, (size - 1)])
-        self.current = 0
+        self.current = current
 
     def next(self) -> int:
         if self.end == 0:
@@ -84,14 +84,14 @@ class NoteAFly(App):
 
     note_idx = None
     notes_data = None
-    notes_data_categorical = None
+    notes_data_categorical = ListProperty()
     note_categories = ListProperty()
     note_category = StringProperty('')
     note_data = DictProperty(rebind=True)
 
     next_note_scheduler = ObjectProperty()
 
-    display_state = OptionProperty("choose", options=["choose", "display"])
+    display_state = OptionProperty("choose", options=["choose", "display", "list"])
     play_state = OptionProperty("play", options=["play", "pause"])
     paginate_interval = NumericProperty(7)
 
@@ -119,13 +119,25 @@ class NoteAFly(App):
         self.notes_data = [note.to_dict() for note in self.db_session.query(Note).all()]
         self.note_categories = list(set([note_dict['category'] for note_dict in self.notes_data]))
 
+    def on_display_state(self, instance, new):
+        if new != 'list':
+            return
+        self.note_idx = None
+        if self.next_note_scheduler:
+            self.next_note_scheduler.cancel()
+
+    def select_index(self, value):
+        self.note_data = self.notes_data_categorical[value]
+        self.note_idx = NoteIndex(len(self.notes_data_categorical), current=value)
+        self.play_state = 'pause'
+        self.display_state = 'display'
+
+
     def paginate(self, value):
         self.next_note_scheduler.cancel()
         Clock.schedule_once(partial(self.paginate_note, direction=value), 0)
         if self.play_state == "play":
             self.next_note_scheduler()
-
-
 
     def toggle_play_state(self, *args, **kwargs):
         if self.play_state == "play":
@@ -156,8 +168,8 @@ class NoteAFly(App):
                 self.next_note_scheduler.cancel()
             self.display_state = "choose"
         else:
-
-            self.notes_data_categorical = [note for note in self.notes_data if note['category'] == value]
+            category_notes = filter(lambda note: note['category'] == value, self.notes_data)
+            self.notes_data_categorical = [{"idx": i, **note} for i, note in enumerate(category_notes)]
             self.note_idx = NoteIndex(len(self.notes_data_categorical))
             if not self.next_note_scheduler:
                 self.next_note_scheduler = Clock.schedule_interval(self.paginate_note, self.paginate_interval)

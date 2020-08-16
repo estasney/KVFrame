@@ -86,7 +86,10 @@ class ContentKeyboard(BoxLayout):
     def _unset_btns_pressed(*args):
         btns, *_ = args
         for btn in btns:
-            ContentKeyboard._set_btn_pressed(btn, False)
+            try:
+                ContentKeyboard._set_btn_pressed(btn, False)
+            except ReferenceError:
+                pass
 
     def _schedule_animations(self, *args, **kwargs):
         animation_interval = self.ANIMATION_WINDOW / len(self.keyboard_animated_widgets)

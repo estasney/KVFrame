@@ -1,23 +1,32 @@
 #:import NoteCategoryChooser custom.chooser
+#:import ScrollingListView custom.scroller
 #:import App kivy.app.App
 
 <NoteAppScreenManager>:
     id: screen_manager
     NoteCategoryChooserScreen:
-        manager: screen_manager
         id: chooser_screen
         name: 'chooser_screen'
+    NoteListViewScreen:
+        id: list_view_screen
+        name: 'list_view_screen'
     NoteCategoryScreen:
         id: note_screen1
         name: 'note_screen1'
-
     NoteCategoryScreen:
         id: note_screen2
         name: 'note_screen2'
 
+<NoteListViewScreen>:
+    id: manager_screen
+    notes: app.notes_data_categorical
+    ScrollingListView:
+        id: scroller
+
+
 <NoteCategoryChooserScreen>:
     id: manager_screen
-    chooser_object: chooser_object
+    child_object: chooser_object
     categories: app.note_categories
     NoteCategoryChooser:
         manager: manager_screen

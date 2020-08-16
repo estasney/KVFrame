@@ -30,11 +30,14 @@ class NoteAppScreenManager(ScreenManager):
     def handle_app_display_state(self, instance, new):
         if new == "choose":  # Show the Category Selection Screen
             self.current = "chooser_screen"
-        else:
+        elif new == "display":
             self.handle_notes()
+        elif new == "list":
+            self.handle_notes_list_view()
+        else:
+            raise Exception(f"Unhandled display state {new}")
 
     def handle_app_play_state(self, instance, value):
-        print(f"ScreenManager play state: {value}")
         self.play_state = value
 
     def handle_notes(self, *args, **kwargs):
@@ -44,9 +47,13 @@ class NoteAppScreenManager(ScreenManager):
         self.current = target
         self.last_note_screen = next_active
 
+    def handle_notes_list_view(self, *args, **kwargs):
+        self.ids['list_view_screen'].set_note_list_view()
+        self.current = 'list_view_screen'
+
 
 class NoteCategoryChooserScreen(Screen):
-    chooser_object = ObjectProperty()
+    child_object = ObjectProperty()
     categories = ListProperty()
 
     def __init__(self, **kwargs):
@@ -61,3 +68,10 @@ class NoteCategoryScreen(Screen):
 
     def set_note_content(self, note_data: dict):
         self.current_note.set_note_content(note_data)
+
+class NoteListViewScreen(Screen):
+    child_object = ObjectProperty()
+    notes = ListProperty()
+
+    def set_note_list_view(self, *args, **kwargs):
+        self.ids['scroller'].set(self.notes)

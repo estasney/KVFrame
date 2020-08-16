@@ -9,6 +9,11 @@
         Rectangle:
             pos: self.pos
             size: self.size
+    ListViewButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: App.get_running_app().display_state = 'list'
+        mipmap: True
+    VSeparator:
     BackButton:
         opacity: 1 if self.state == 'normal' else 0.6
         on_release: App.get_running_app().paginate(-1)

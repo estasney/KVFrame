@@ -74,7 +74,6 @@ class PlayStateButton(DynamicImageButton):
 
     def on_current_source(self, old, new):
         self.source = self.sources[new]
-        print("PlayStateButton reloaded")
 
 
 class BackButton(ImageButton):
@@ -93,3 +92,8 @@ class ReturnButton(ImageButton):
 
     def __init__(self, *args, **kwargs):
         super().__init__(src="atlas://static/icons/button_bar/back_arrow")
+
+class ListViewButton(ImageButton):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(src="atlas://static/icons/button_bar/list_view")
