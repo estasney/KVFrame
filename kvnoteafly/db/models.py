@@ -96,6 +96,7 @@ class NoteCategory(IntEnum):
     PyCharm = 4
     Jinja = 5
     Pandas = 6
+    Git = 7
 
 
 class Note(Base, DictMixin):
