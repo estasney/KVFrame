@@ -34,7 +34,7 @@ def get_params():
         print(f"Last used\nCategory: {PARAMS['category']}\nNote_Type: {PARAMS['note_type']}")
         use_same = input("Use the same params? [y/n]")
         if use_same == "y":
-            return
+            return PARAMS
     # category
     categories = {i: NoteCategory(i) for i in range(len(NoteCategory))}
     for k, v in categories.items():
