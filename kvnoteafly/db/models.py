@@ -97,6 +97,7 @@ class NoteCategory(IntEnum):
     Jinja = 5
     Pandas = 6
     Git = 7
+    Regex = 8
 
 
 class Note(Base, DictMixin):
