@@ -1,9 +1,11 @@
-from kvyouget.dl.utils import parse_youget, run_process
+from kvyouget.dl.utils import get_url_options
 
 def get_url_itags(url):
-    response = run_process("you-get", "-i", url)
-    results = parse_youget(response)
-    return results
+    return get_url_options(url)
+
+def upload_file_to_ftp():
+    pass
+
 
 
 

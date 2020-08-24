@@ -1,4 +1,7 @@
+import json
 from collections import namedtuple
+from contextlib import redirect_stdout
+from io import StringIO
 from typing import Dict
 
 from you_get.common import any_download
@@ -8,7 +11,10 @@ Result = namedtuple("Result", "title, itags")
 
 
 def get_url_options(url: str) -> Result:
-    url_options = any_download(url, info_only=True, json_output=True)
+    s = StringIO()
+    with redirect_stdout(s):
+        any_download(url, info_only=True, json_output=True)
+    url_options = json.loads(s.getvalue())
     title = url_options["title"]
     itags = []
     for itag, data in url_options['streams'].items():
