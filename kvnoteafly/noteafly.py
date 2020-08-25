@@ -116,8 +116,14 @@ class NoteAFly(App):
     def _setup_data(self):
         """Initial load of data"""
         self.db_session = create_session()
-        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).all()]
-        self.note_categories = list(set([note_dict['category'] for note_dict in self.notes_data]))
+        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(Note.id).all()]
+
+        # Remove duplicates, preverse order
+        seen = set()
+        seen_add = seen.add
+        self.note_categories = [note_dict['category'] for note_dict in self.notes_data if not (
+                note_dict['category'] in seen or seen_add(note_dict['category']))]
+        del seen, seen_add
 
     def on_display_state(self, instance, new):
         if new != 'list':
