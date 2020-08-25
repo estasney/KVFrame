@@ -122,7 +122,7 @@ class Note(Base, DictMixin):
             return None
 
     @keys.setter
-    def keys(self, kbd_keys):
+    def keys(self, kbd_keys: List[str]):
         self.keys_str = ",".join(kbd_keys)
 
     @property

@@ -69,7 +69,7 @@ def create_note(session):
                 key = input("Enter a key, type 'done' when finished")
                 if key == 'done':
                     note = Note()
-                    note.keys = ",".join(keys)
+                    note.keys = keys
                     note.category = NoteCategory(note_category)
                     note.note_type = NoteType(note_type)
                     return note
