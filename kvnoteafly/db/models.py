@@ -98,6 +98,7 @@ class NoteCategory(IntEnum):
     Pandas = 6
     Git = 7
     Regex = 8
+    CSS = 9
 
 
 class Note(Base, DictMixin):
