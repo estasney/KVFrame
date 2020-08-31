@@ -99,7 +99,7 @@ class NoteCategory(IntEnum):
     Git = 7
     Regex = 8
     CSS = 9
-    Rest = 10
+    Rst = 10
 
 
 class Note(Base, DictMixin):
