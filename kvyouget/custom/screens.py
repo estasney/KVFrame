@@ -15,7 +15,7 @@ class KVGScreenManager(ScreenManager):
         super().__init__(**kwargs)
 
 
-class DownloadScreen(Screen):
+class InputUrlScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
