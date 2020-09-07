@@ -31,8 +31,9 @@
     GreenButton:
         opacity: 1 if self.state == 'normal' else 0.6
         on_release: app.download_action("start", root.input_element.text)
+        disabled: root.input_disabled
         mipmap: True
-        text: "Start"
+        text: "Get"
         size_hint_x: 0.8
     VSeparator:
         size_hint_x: 1
@@ -44,9 +45,10 @@
                 size: self.size
     RedButton:
         opacity: 1 if self.state == 'normal' else 0.6
-        on_release: app.download_action("cancel", None)
+        on_release: root.input_element.text = ""
+        disabled: root.input_disabled
         mipmap: True
-        text: "Cancel"
+        text: "Clear"
         size_hint_x: 0.8
     VSeparator:
         size_hint_x: 1
