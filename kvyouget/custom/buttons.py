@@ -1,4 +1,4 @@
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.utils import get_color_from_hex
@@ -27,9 +27,20 @@ class GreenButton(RoundedButton):
     PRESSED_COLOR = StringProperty(get_color_from_hex("#048243"))
     FONT_COLOR = StringProperty(get_color_from_hex("#000000"))
 
-class DownloadButtonBar(BoxLayout):
 
+class DownloadButtonBar(BoxLayout):
     input_element = ObjectProperty()
+    input_disabled = BooleanProperty(True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    def on_input_element(self, *args):
+        self.input_element.bind(text=self.handle_input_element_text)
+
+    def handle_input_element_text(self, instance, value):
+        if not value:
+            self.input_disabled = True
+        else:
+            self.input_disabled = False
+
