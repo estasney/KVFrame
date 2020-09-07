@@ -19,23 +19,24 @@
                 pos: self.pos
                 size: self.size
         size_hint: 1, 2
-    HSeparator:
+
     BoxLayout:
         orientation: 'vertical'
         size_hint: 1, 1
         Label:
-            text: dl.url_prefix + "\n..."
+            text: "Enter URL"
             size_hint: 1, 1
             halign: 'center'
             valign: 'center'
             text_size: self.size
+            font_size: 24
         TextInput:
             id: url_input
-            text: "test"
+            text: ""
             multiline: False
             size_hint: 1, 1
             font_size: 30
-    HSeparator:
+
     BoxLayout:
         canvas:
             Color:
@@ -43,9 +44,9 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
-        size_hint: 1, 2
+        size_hint: 1, 1
     DownloadButtonBar:
-        size_hint: 1, 0.5
+        size_hint: 1, 1
         input_element: url_input
 
 

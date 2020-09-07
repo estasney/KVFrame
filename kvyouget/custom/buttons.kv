@@ -16,18 +16,43 @@
     orientation: "horizontal"
     canvas.before:
         Color:
-            rgb: app.colors['Primary']
+            rgb: app.colors['Dark']
         Rectangle:
             pos: self.pos
             size: self.size
-    RedButton:
-        opacity: 1 if self.state == 'normal' else 0.6
-        on_release: app.download_action("cancel", None)
-        mipmap: True
-        text: "Cancel"
     VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
     GreenButton:
         opacity: 1 if self.state == 'normal' else 0.6
         on_release: app.download_action("start", root.input_element.text)
         mipmap: True
         text: "Start"
+        size_hint_x: 0.8
+    VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    RedButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: app.download_action("cancel", None)
+        mipmap: True
+        text: "Cancel"
+        size_hint_x: 0.8
+    VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
