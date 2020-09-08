@@ -1,4 +1,4 @@
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, OptionProperty, BooleanProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from utils import import_kv
@@ -19,3 +19,14 @@ class InputUrlScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+class ChooserScreen(Screen):
+
+    is_loaded = BooleanProperty()
+    itags = ListProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
