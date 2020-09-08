@@ -2,7 +2,6 @@ from typing import List
 
 from kivy.core.window import Window
 from kivy.properties import ObjectProperty, StringProperty, NumericProperty
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 

@@ -22,6 +22,8 @@ def get_url_options(url: str) -> Result:
     for itag, data in url_options['streams'].items():
         itags.append(_parse_itag(data))
 
+    itags.sort(key=lambda i: i.x * i.y, reverse=True)
+
     return Result(title=title, itags=itags)
 
 

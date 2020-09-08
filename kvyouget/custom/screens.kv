@@ -1,11 +1,16 @@
 #:import App kivy.app.App
 #:import Downloader custom.downloader
+#:import DownloadOptionsContainer custom.download_options
 
 <KVGScreenManager>:
     id: screen_manager
     InputUrlScreen:
         name: 'input_url_screen'
+    ChooserScreen:
+        name: 'chooser_screen'
 
 <InputUrlScreen>:
     Downloader:
 
+<ChooserScreen>:
+    DownloadOptionsContainer:
