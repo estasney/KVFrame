@@ -100,6 +100,7 @@ class NoteCategory(IntEnum):
     Regex = 8
     CSS = 9
     Rst = 10
+    Excel = 11
 
 
 class Note(Base, DictMixin):
