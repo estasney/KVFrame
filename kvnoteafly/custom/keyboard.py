@@ -72,7 +72,7 @@ class ContentKeyboard(BoxLayout):
     ANIMATION_WINDOW = 2
 
     def __init__(self, content_data, **kwargs):
-        self.note_text = content_data['text']
+        self.note_text = content_data['text'] if content_data['text'] else ""
         self.keyboard_buttons = content_data['keys_str'].split(",")
         super(ContentKeyboard, self).__init__(**kwargs)
         self.on_keyboard_buttons()
