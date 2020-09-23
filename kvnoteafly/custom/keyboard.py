@@ -80,7 +80,10 @@ class ContentKeyboard(BoxLayout):
     @staticmethod
     def _set_btn_pressed(*args):
         btn, value, *_ = args
-        btn.pressed = value
+        try:
+            btn.pressed = value
+        except ReferenceError:
+            pass
 
     @staticmethod
     def _unset_btns_pressed(*args):
