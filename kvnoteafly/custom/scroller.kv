@@ -21,6 +21,9 @@
         size_hint_x: 0.8
         mipmap: True
         font_size: 36
+        text_size: self.size
+        valign: 'middle'
+        halign: 'center'
     Button:
         canvas:
             Color:
@@ -50,7 +53,10 @@
         text: root.title_text
         size_hint_x: 0.3
         mipmap: True
+        text_size: self.size
         font_size: 24
+        valign: 'middle'
+        halign: 'center'
     ListItemKeyboardContainer:
         id: kbd
         size_hint_x: 0.3
