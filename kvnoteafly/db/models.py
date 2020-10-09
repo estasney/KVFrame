@@ -101,6 +101,7 @@ class NoteCategory(IntEnum):
     CSS = 9
     Rst = 10
     Excel = 11
+    Docker = 12
 
 
 class Note(Base, DictMixin):
