@@ -6,7 +6,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
-from custom.keyboard import KeyboardImage
 from db import NoteType
 from utils import import_kv
 
@@ -47,7 +46,6 @@ class ListItemKeyboard(GridLayout):
         self.keyboard_buttons = content_data['keys_str'].split(",")
         super().__init__(**kwargs)
         self.keyboard_container.set(self.keyboard_buttons)
-
 
 
 class ListItemKeyboardContainer(BoxLayout):

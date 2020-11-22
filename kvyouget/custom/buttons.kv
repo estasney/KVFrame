@@ -1,0 +1,60 @@
+#:import VSeparator custom.separator
+
+<RoundedButton>:
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgb: self.DISABLED_COLOR if self.disabled else self.UNPRESSED_COLOR if self.state == 'normal' else self.PRESSED_COLOR
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10,]
+    color: self.FONT_COLOR
+    font_size: sp(20)
+
+<DownloadButtonBar>:
+    orientation: "horizontal"
+    canvas.before:
+        Color:
+            rgb: app.colors['Dark']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    GreenButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: app.download_action("start", root.input_element.text)
+        disabled: root.input_disabled
+        mipmap: True
+        text: "Get"
+        size_hint_x: 0.8
+    VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    RedButton:
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: root.input_element.text = ""
+        disabled: root.input_disabled
+        mipmap: True
+        text: "Clear"
+        size_hint_x: 0.8
+    VSeparator:
+        size_hint_x: 1
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size

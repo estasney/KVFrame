@@ -1,0 +1,53 @@
+#:import DownloadButtonBar custom.buttons
+#:import HSeparator custom.separator
+<Downloader>:
+    id: dl
+    orientation: 'vertical'
+    spacing: 10
+    canvas.before:
+        Color:
+            rgb: app.colors['Dark']
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        size_hint: 1, 2
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, 1
+        Label:
+            text: "Enter URL"
+            size_hint: 1, 1
+            halign: 'center'
+            valign: 'center'
+            text_size: self.size
+            font_size: 24
+        TextInput:
+            id: url_input
+            text: ""
+            multiline: False
+            size_hint: 1, 1
+            font_size: 30
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: app.colors['Dark']
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        size_hint: 1, 1
+    DownloadButtonBar:
+        size_hint: 1, 1
+        input_element: url_input
+
+
+
