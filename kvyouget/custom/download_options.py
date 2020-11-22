@@ -1,7 +1,7 @@
 from typing import List
 
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty, BooleanProperty
+from kivy.properties import ObjectProperty, BooleanProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from kvyouget.custom.scroller import ScrollingListView, ListView
@@ -9,15 +9,9 @@ from utils import import_kv
 
 import_kv(__file__)
 
-
 class DownloadOptionsContainer(BoxLayout):
-    is_loaded = BooleanProperty(True)
-
-    def on_parent(self, instance, value):
-        self.parent.bind(is_loaded=self.handle_loaded)
-
-    def handle_loaded(self, instance, value):
-        print(f"Handle loaded {value}")
+    itags = ListProperty()
+    pass
 
 
 class DownloadOptions(ScrollingListView):

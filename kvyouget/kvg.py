@@ -23,8 +23,6 @@ class KVG(App):
 
     APP_NAME = 'KVG'
     screen_manager = ObjectProperty()
-
-    itags = ListProperty()
     url_title = StringProperty()
 
     colors = DictProperty({
@@ -39,12 +37,10 @@ class KVG(App):
         threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
 
     def download_action(self, action, value):
-        print(action)
-        print(value)
+        self.set_screen("loading_screen")
         self.run_threaded(self.get_itags, url=value)
 
     def set_screen(self, *args, **kwargs):
-
         self.screen_manager.current = args[0]
 
     def build(self):
@@ -53,19 +49,9 @@ class KVG(App):
         return sm
 
     def get_itags(self, url):
-        # Animate the screen change
-        f1 = partial(self.set_screen, "chooser_screen")
-        Clock.schedule_once(f1, 0)
-
         # Blocking Operation
-        results = get_url_options(url)
-        self.update_url_options(results)
-
-    @mainthread
-    def update_url_options(self, result: Result):
-        print(result.itags)
-        self.itags = result.itags
-        self.url_title = result.title
+        result = get_url_options(url)
+        self.screen_manager.handle_itag_result(result)
 
 
 if __name__ == '__main__':
