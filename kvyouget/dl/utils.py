@@ -33,7 +33,7 @@ def get_url_options(url: str) -> Result:
 def download_url(url: str, itag: int, output_dir: Optional[str], on_complete: callable):
     s = StringIO()
     with redirect_stdout(s):
-        any_download(url, stream_id=itag, output_dir=output_dir, merge=True)
+        any_download(url, stream_id=str(itag), output_dir=output_dir, merge=True)
     on_complete()
 
 
