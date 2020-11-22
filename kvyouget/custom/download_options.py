@@ -61,3 +61,6 @@ class ITagListItem(GridLayout):
         self.itag_size = itag.size_mb
         self.itag_xy = str(f"{itag.x} , {itag.y}")
         super().__init__(**kwargs)
+
+    def select_itag(self, *args, **kwargs):
+        print(f"Select ITag {self.itag_id}")

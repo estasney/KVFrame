@@ -1,3 +1,5 @@
+#:import VSeparator custom.separator
+
 <DownloadOptionsContainer>:
     BoxLayout:
         orientation: 'vertical'
@@ -22,14 +24,24 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    orientation: 'vertical'
+    orientation: 'horizontal'
     Label:
         text: f"[u]{root.title}[/u]"
         mipmap: True
         markup: True
         font_size: 24
+        text_size: self.size
         valign: 'middle'
         halign: 'center'
+        size_hint_x: 0.85
+    VSeparator:
+    BackButton:
+        size_hint_x: 0.1
+        opacity: 1 if self.state == 'normal' else 0.6
+        on_release: app.cancel_itag()
+        mipmap: True
+        color: [0.86666, 0.247, 0.0627, 1]
+
 
 <ITagListItem>:
     padding: [5, 5, 5, 5]

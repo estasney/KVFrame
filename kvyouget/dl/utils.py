@@ -2,7 +2,7 @@ import json
 from collections import namedtuple
 from contextlib import redirect_stdout
 from io import StringIO
-from typing import Dict
+from typing import Dict, Optional
 import re
 
 from you_get.common import any_download
@@ -29,6 +29,13 @@ def get_url_options(url: str) -> Result:
     itags = [i for i in itags if i.x > 0 and i.y > 0]
 
     return Result(title=title, itags=itags)
+
+def download_url(url: str, itag: int, output_dir: Optional[str], on_complete: callable):
+    s = StringIO()
+    with redirect_stdout(s):
+        any_download(url, stream_id=itag, output_dir=output_dir, merge=True)
+    on_complete()
+
 
 
 def _parse_itag(itag: Dict) -> ITag:

@@ -16,6 +16,7 @@ class KVGScreenManager(ScreenManager):
 
         super().__init__(**kwargs)
 
+    @mainthread
     def handle_itag_result(self, result: Result, *args, **kwargs):
         self.ids['chooser_screen'].set_result(result, *args, **kwargs)
         self.current = 'chooser_screen'
@@ -39,6 +40,7 @@ class ChooserScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    @mainthread
     def set_result(self, result: Result, *args, **kwargs):
         print(f"Chooser Screen got Result")
         self.url_title = result.title
