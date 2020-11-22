@@ -2,6 +2,7 @@ from typing import List
 
 from kivy.core.window import Window
 from kivy.properties import ObjectProperty, StringProperty
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 
 from dl.utils import ITag, Result
@@ -20,18 +21,30 @@ class DownloadOptions(ScrollingListView):
             layout.bind(minimum_height=layout.setter('height'))
             self.add_widget(layout)
             self.child_object = layout
-        self.children[0].set(result.itags)
+        self.children[0].set(result)
 
 
 class ITagListView(ListView):
 
-    def set(self, itags: List[ITag]):
+    def set(self, result: Result):
         self.clear_widgets()
-        for itag in itags:
+        self.add_widget(
+                ITagTitleItem(title=result.title, width=Window.width, height=(Window.height / 6),
+                              size_hint=(None, None))
+                )
+        for itag in result.itags:
             self.add_widget(
                     ITagListItem(itag=itag, width=Window.width, height=(Window.height / 6),
                                  size_hint=(None, None))
                     )
+
+
+class ITagTitleItem(BoxLayout):
+    title = StringProperty()
+
+    def __init__(self, title, **kwargs):
+        self.title = title
+        super().__init__(**kwargs)
 
 
 class ITagListItem(GridLayout):
@@ -41,7 +54,7 @@ class ITagListItem(GridLayout):
     itag_size = StringProperty()
     itag_xy = StringProperty()
 
-    def __init__(self, itag: ITag, *args, **kwargs):
+    def __init__(self, itag: ITag, **kwargs):
         self.itag_id = str(itag.itag)
         self.container = str(itag.container)
         self.quality = str(itag.quality)

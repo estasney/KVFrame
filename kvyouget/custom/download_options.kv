@@ -10,6 +10,27 @@
             text_size: self.size
             font_size: 24
 
+<ITagTitleItem>:
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 0.8
+        Line:
+            width: 1
+            rectangle: (self.x, self.y, self.width, self.height)
+        Color:
+            rgb: 0.25, 0.25, 0.25
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'vertical'
+    Label:
+        text: f"[u]{root.title}[/u]"
+        mipmap: True
+        markup: True
+        font_size: 24
+        valign: 'middle'
+        halign: 'center'
+
 <ITagListItem>:
     padding: [5, 5, 5, 5]
     canvas:
@@ -30,7 +51,7 @@
             valign: 'middle'
             halign: 'center'
         Label:
-            text: f"{root.itag_size} {root.itag_xy}"
+            text: f"{root.itag_size}"
             mipmap: True
             font_size: 24
             text_size: self.size

@@ -26,6 +26,7 @@ def get_url_options(url: str) -> Result:
         itags.append(_parse_itag(data))
 
     itags.sort(key=lambda i: i.x * i.y, reverse=True)
+    itags = [i for i in itags if i.x > 0 and i.y > 0]
 
     return Result(title=title, itags=itags)
 
