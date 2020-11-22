@@ -17,7 +17,7 @@ class KVGScreenManager(ScreenManager):
         super().__init__(**kwargs)
 
     def handle_itag_result(self, result: Result, *args, **kwargs):
-        self.ids['chooser_screen'].set_result(result)
+        self.ids['chooser_screen'].set_result(result, *args, **kwargs)
         self.current = 'chooser_screen'
 
 
@@ -33,13 +33,13 @@ class LoaderScreen(Screen):
 
 
 class ChooserScreen(Screen):
-    itags = ListProperty(rebind=True)
     url_title = StringProperty("")
+    child_object = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def set_result(self, result: Result, *args, **kwargs):
         print(f"Chooser Screen got Result")
-        self.itags = result.itags
         self.url_title = result.title
+        self.child_object.set(result)

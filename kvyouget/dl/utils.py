@@ -7,10 +7,13 @@ import re
 
 from you_get.common import any_download
 
-ITag = namedtuple("ITag", "itag, container, quality, size, x, y")
+ITag = namedtuple("ITag", "itag, container, quality, size, size_mb, x, y")
 Result = namedtuple("Result", "title, itags")
 
 xy_re = re.compile(r"([\d]{3,4})(?:x)([\d]{3,4})")
+
+def bytes_to_mb(n_bytes: int) -> str:
+    return f"{n_bytes / (1024 ** 2) :.1f} MB"
 
 def get_url_options(url: str) -> Result:
     s = StringIO()
@@ -32,9 +35,10 @@ def _parse_itag(itag: Dict) -> ITag:
     itag_quality = itag["quality"]
     container = itag["container"]
     size = itag.get("size", 0)
+    size_mb = bytes_to_mb(size)
     xy_size = xy_re.search(itag_quality)
     if not xy_size:
         x, y, = 0, 0
     else:
         x, y = [int(i) for i in xy_size.groups()]
-    return ITag(itag=itag_id, container=container, quality=itag_quality, size=size, x=x, y=y)
+    return ITag(itag=itag_id, container=container, quality=itag_quality, size=size, size_mb=size_mb, x=x, y=y)
