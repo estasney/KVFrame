@@ -1,6 +1,3 @@
-import os
-from typing import Set
-
 import click
 import pyperclip
 
@@ -10,8 +7,6 @@ PARAMS = {
     "category":  None,
     "note_type": None,
     }
-
-KEYCHARS = None
 
 
 @click.command()
@@ -31,20 +26,6 @@ def create():
             print(e)
             click.echo("Goodbye")
             return
-
-
-def get_available_keys() -> Set[str]:
-    from kvnoteafly import __file__ as package_file
-    import json
-    package_dir = os.path.dirname(package_file)
-    key_atlas_fp = os.path.join(package_dir, "static", "keys", "keys.atlas")
-    with open(key_atlas_fp, "r") as kp:
-        key_atlas = json.load(kp)
-    key_chars = set([])
-    for filename, keys_data in key_atlas.items():
-        key_chars.update(set(keys_data.keys()))
-
-    return key_chars
 
 
 def get_params():
@@ -74,18 +55,10 @@ def get_params():
 
 
 def create_note(session):
-    global KEYCHARS
     params = get_params()
 
     note_type = params['note_type']
     note_category = params['category']
-
-    def validate_key(char) -> bool:
-        global KEYCHARS
-        if KEYCHARS is None:
-            KEYCHARS = get_available_keys()
-        return char.lower() in KEYCHARS
-
 
     def handle_key_note():
         keys = []
@@ -93,7 +66,7 @@ def create_note(session):
             try:
                 if keys:
                     print(",".join(keys))
-                key = input("Enter a key, type 'done' when finished : ")
+                key = input("Enter a key, type 'done' when finished")
                 if key == 'done':
                     note = Note()
                     note.keys = keys
@@ -101,25 +74,7 @@ def create_note(session):
                     note.note_type = NoteType(note_type)
                     return note
                 else:
-                    key_valid = validate_key(key)
-                    if key_valid:
-                        keys.append(key)
-                    else:
-                        print(f"No Key image found for {key.lower()}")
-                        print("""Choose an option:
-                        y : Accept
-                        n : Discard (default)
-                        ? : Discard and show available keys
-                        """)
-                        decision = input(f"Enter option : ")
-                        if decision == "y":
-                            keys.append(key)
-                            continue
-                        if decision == "?":
-                            print(", ".join(sorted(list(KEYCHARS))))
-                            continue
-                        else:
-                            continue
+                    keys.append(key)
             except:
                 return None
 
