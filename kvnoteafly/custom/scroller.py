@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
+from kvnoteafly.custom.keyboard import KeyboardImage
 from db import NoteType
 from utils import import_kv
 
