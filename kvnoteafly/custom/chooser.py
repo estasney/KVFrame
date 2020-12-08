@@ -2,6 +2,7 @@ from kivy.core.window import Window
 from kivy.properties import ObjectProperty, ListProperty, StringProperty
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.vector import Vector
@@ -28,7 +29,7 @@ class NoteCategoryChooserScrollWrapper(ScrollView):
             self.children[0].set(value)
 
 
-class NoteCategoryChooser(StackLayout):
+class NoteCategoryChooser(GridLayout):
     manager = ObjectProperty()
 
     def __init__(self, **kwargs):
