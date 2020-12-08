@@ -1,4 +1,4 @@
-from kvyouget.dl.utils import get_url_options
+from dl.utils import get_url_options
 
 def get_url_itags(url):
     return get_url_options(url)

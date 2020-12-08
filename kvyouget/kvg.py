@@ -8,8 +8,8 @@ from kivy.app import App
 from kivy.clock import mainthread
 from kivy.properties import (ObjectProperty, StringProperty, DictProperty)
 
-from kvyouget.custom.screens import KVGScreenManager
-from kvyouget.dl.utils import get_url_options, download_url
+from custom.screens import KVGScreenManager
+from dl.utils import get_url_options, download_url
 
 
 class KVG(App):

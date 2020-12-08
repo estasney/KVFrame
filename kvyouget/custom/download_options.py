@@ -6,7 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 
 from dl.utils import ITag, Result
-from kvyouget.custom.scroller import ScrollingListView, ListView
+from custom.scroller import ScrollingListView, ListView
 from utils import import_kv
 
 import_kv(__file__)
