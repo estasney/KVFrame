@@ -93,7 +93,7 @@ class NoteAFly(App):
 
     display_state = OptionProperty("choose", options=["choose", "display", "list"])
     play_state = OptionProperty("play", options=["play", "pause"])
-    paginate_interval = NumericProperty(60)
+    paginate_interval = NumericProperty(15)
 
     screen_manager = ObjectProperty()
 
