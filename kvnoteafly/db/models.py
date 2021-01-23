@@ -111,7 +111,7 @@ class Note(Base, DictMixin):
     id = Column(Integer, primary_key=True)
     title = Column(String(128))
     keys_str = Column(String(128))
-    text = Column(String(1024))
+    text = Column(String(2048))
     _category = Column(Integer, default=0)
     _note_type = Column(Integer, default=0)
 
