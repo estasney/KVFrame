@@ -3,6 +3,7 @@ from typing import Set
 
 import click
 import pyperclip
+from subprocess import Popen, PIPE
 
 from kvnoteafly.db.models import create_session, Note, NoteCategory, NoteType
 
@@ -25,12 +26,43 @@ def create():
             if make_new == "y":
                 create_note(session)
             else:
-                click.echo("Goodbye")
-                return
+                commit_changes = input("Commit Notes and Push? [y/n]")
+                if commit_changes == "n":
+                    click.echo("Notes saved but not committed")
+                    click.echo("Goodbye")
+                    return
+                else:
+                    commit_notes()
+                    click.echo("Notes saved and committed")
+                    click.echo("Goodbye")
+                    return
         except Exception as e:
             print(e)
+            click.echo("Exception Occurred")
             click.echo("Goodbye")
             return
+
+def commit_notes():
+    db_path = "../noteafly.db"
+
+    with Popen(['git', 'add', db_path], stdout=PIPE, stderr=PIPE) as p:
+        result, _ = p.communicate()
+        result = result.decode().strip()
+        print(result)
+
+    with Popen(['git', 'commit', '-m', 'add note'], stdout=PIPE, stderr=PIPE) as p:
+        result, _ = p.communicate()
+        result = result.decode().strip()
+        print(result)
+
+    with Popen(['git', 'push'], stdout=PIPE, stderr=PIPE) as p:
+        result, _ = p.communicate()
+        result = result.decode().strip()
+        print(result)
+
+
+
+
 
 
 def get_available_keys() -> Set[str]:
