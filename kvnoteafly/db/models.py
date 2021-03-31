@@ -103,6 +103,7 @@ class NoteCategory(IntEnum):
     Excel = 11
     Docker = 12
     Bash = 13
+    Linux = 14
 
 
 class Note(Base, DictMixin):
