@@ -104,6 +104,7 @@ class NoteCategory(IntEnum):
     Docker = 12
     Bash = 13
     Linux = 14
+    React = 15
 
 
 class Note(Base, DictMixin):
