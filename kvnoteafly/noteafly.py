@@ -1,5 +1,3 @@
-import os
-import sys
 import threading
 from functools import partial
 
@@ -198,6 +196,5 @@ class NoteAFly(App):
 
 
 if __name__ == '__main__':
-    sys.path.append(os.getcwd())
     load_dotenv()
     NoteAFly().run()

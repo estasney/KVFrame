@@ -1,6 +1,6 @@
 from itertools import cycle
 
-from cytoolz import sliding_window
+from toolz import sliding_window
 from kivy.app import App
 from kivy.properties import ObjectProperty, ListProperty, OptionProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen

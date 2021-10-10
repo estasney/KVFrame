@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from functools import partial
 from itertools import zip_longest
-from cytoolz import groupby
+from toolz import groupby
 
 import requests
 
