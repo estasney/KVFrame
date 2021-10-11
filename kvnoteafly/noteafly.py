@@ -116,7 +116,7 @@ class NoteAFly(App):
         self.db_session = create_session()
         self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(Note.id).all()]
 
-        # Remove duplicates, preverse order
+        # Remove duplicates, preserve order
         seen = set()
         seen_add = seen.add
         self.note_categories = [note_dict['category'] for note_dict in self.notes_data if not (

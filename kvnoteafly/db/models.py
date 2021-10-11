@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum, IntEnum
 from pathlib import Path
 from typing import Optional, List
+from pygments.lexers import get_lexer_by_name
 
 from sqlalchemy import Column, Integer, create_engine, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -15,6 +16,8 @@ Base = declarative_base()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 db_path = f"sqlite:///{Path(basedir).as_posix()}/noteafly.db"
+
+
 
 
 def create_session(db_path=db_path, base=Base):
@@ -116,6 +119,7 @@ class Note(Base, DictMixin):
     text = Column(String(2048))
     _category = Column(Integer, default=0)
     _note_type = Column(Integer, default=0)
+    _code_lexer = Column(Integer, default=0)
 
     @property
     def keys(self):
@@ -155,3 +159,20 @@ class Note(Base, DictMixin):
     @category.setter
     def category(self, category: NoteCategory):
         self._category = category.value
+
+    @property
+    def code_lexer(self) -> int:
+        return self._code_lexer
+
+    @code_lexer.getter
+    def code_lexer(self):
+        if self._code_lexer is not None:
+            return get_lexer_by_name(self._code_lexer)
+        return None
+
+    @code_lexer.setter
+    def code_lexer(self, value):
+        self._code_lexer = value
+
+
+

@@ -2,8 +2,11 @@ import os
 from typing import Set
 
 import click
+import pygments.lexers
 import pyperclip
 from subprocess import Popen, PIPE
+
+from pygments.util import ClassNotFound
 
 from kvnoteafly.db.models import create_session, Note, NoteCategory, NoteType
 
@@ -112,6 +115,7 @@ def create_note(session):
     note_type = params['note_type']
     note_category = params['category']
 
+
     def validate_key(char) -> bool:
         global KEYCHARS
         if KEYCHARS is None:
@@ -155,6 +159,31 @@ def create_note(session):
             except:
                 return None
 
+    def handle_code_note():
+        code_lexer = None
+        while True:
+            cl = input(f"Lexer ? [Python]")
+            if not cl:
+                break
+            try:
+                pygments.lexers.get_lexer_by_name(cl)
+                code_lexer = cl
+                break
+            except ClassNotFound:
+                print(f"{cl} is not a valid lexer")
+                continue
+
+        ok = input("Ready to get clipboard contents? [y/n]")
+        if ok == "n":
+            return
+
+        note = Note()
+        note.text = pyperclip.paste()
+        note.category = NoteCategory(params['category'])
+        note.note_type = NoteType(params['note_type'])
+        note.code_lexer = code_lexer
+        return note
+
     def handle_other_note():
         ok = input("Ready to get clipboard contents? [y/n]")
         if ok == "n":
@@ -168,6 +197,8 @@ def create_note(session):
 
     if note_type == NoteType.KEYBOARD_NOTE.value:
         note = handle_key_note()
+    elif note_type == NoteType.CODE_NOTE.value:
+        note = handle_code_note()
     else:
         note = handle_other_note()
     if note:

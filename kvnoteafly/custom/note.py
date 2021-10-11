@@ -23,7 +23,8 @@ class Note(BoxLayout):
         content_data = {
             "text":      note_data['text'],
             "keys_str":  note_data['keys_str'],
-            "note_type": note_data['note_type']
+            "note_type": note_data['note_type'],
+            "code_lexer": note_data.get('code_lexer')
             }
 
         self.note_title.set(title_data)
