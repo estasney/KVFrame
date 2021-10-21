@@ -164,7 +164,8 @@ def create_note(session):
         while True:
             cl = input(f"Lexer ? [Python]")
             if not cl:
-                break
+
+                code_lexer = 'Python'
             try:
                 pygments.lexers.get_lexer_by_name(cl)
                 code_lexer = cl
