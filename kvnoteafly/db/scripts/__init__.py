@@ -135,6 +135,7 @@ def create_note(session):
                     note.keys = keys
                     note.category = NoteCategory(note_category)
                     note.note_type = NoteType(note_type)
+                    note.code_lexer = None
                     return note
                 else:
                     key_valid = validate_key(key)
@@ -164,7 +165,6 @@ def create_note(session):
         while True:
             cl = input(f"Lexer ? [Python]")
             if not cl:
-
                 code_lexer = 'Python'
             try:
                 pygments.lexers.get_lexer_by_name(cl)

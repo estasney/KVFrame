@@ -166,7 +166,7 @@ class Note(Base, DictMixin):
 
     @code_lexer.getter
     def code_lexer(self):
-        if self._code_lexer is not None:
+        if self._code_lexer:
             return get_lexer_by_name(self._code_lexer)
         return None
 
