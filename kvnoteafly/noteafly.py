@@ -6,6 +6,7 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty,
                              NumericProperty)
+from sqlalchemy import desc
 
 from custom.screens import NoteAppScreenManager
 from db import create_session, Note
@@ -114,7 +115,7 @@ class NoteAFly(App):
     def _setup_data(self):
         """Initial load of data"""
         self.db_session = create_session()
-        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(Note.id).all()]
+        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(desc(Note.id)).all()]
 
         # Remove duplicates, preserve order
         seen = set()
