@@ -115,7 +115,7 @@ class NoteAFly(App):
     def _setup_data(self):
         """Initial load of data"""
         self.db_session = create_session()
-        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(desc(Note.id)).all()]
+        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(Note.category, desc(Note.id)).all()]
 
         # Remove duplicates, preserve order
         seen = set()

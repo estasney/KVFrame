@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional, List
 from pygments.lexers import get_lexer_by_name
 
-from sqlalchemy import Column, Integer, create_engine, String
+from sqlalchemy import Column, Integer, create_engine, String, Enum as SQLEnum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.collections import InstrumentedList
@@ -16,8 +16,6 @@ Base = declarative_base()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 db_path = f"sqlite:///{Path(basedir).as_posix()}/noteafly.db"
-
-
 
 
 def create_session(db_path=db_path, base=Base):
@@ -117,8 +115,8 @@ class Note(Base, DictMixin):
     title = Column(String(128))
     keys_str = Column(String(128))
     text = Column(String(2048))
-    _category = Column(Integer, default=0)
-    _note_type = Column(Integer, default=0)
+    category = Column(SQLEnum(NoteCategory))
+    note_type = Column(SQLEnum(NoteType))
     _code_lexer = Column(Integer, default=0)
 
     @property
@@ -135,30 +133,6 @@ class Note(Base, DictMixin):
     @keys.setter
     def keys(self, kbd_keys: List[str]):
         self.keys_str = ",".join(kbd_keys)
-
-    @property
-    def note_type(self) -> int:
-        return self._note_type
-
-    @note_type.getter
-    def note_type(self):
-        return NoteType(self._note_type)
-
-    @note_type.setter
-    def note_type(self, nt: NoteType):
-        self._note_type = nt.value
-
-    @property
-    def category(self) -> int:
-        return self._category
-
-    @category.getter
-    def category(self):
-        return NoteCategory(self._category)
-
-    @category.setter
-    def category(self, category: NoteCategory):
-        self._category = category.value
 
     @property
     def code_lexer(self) -> int:

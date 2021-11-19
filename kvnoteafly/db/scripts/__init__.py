@@ -10,11 +10,9 @@ from pygments.util import ClassNotFound
 
 from kvnoteafly.db.models import create_session, Note, NoteCategory, NoteType
 
-PARAMS = {
-    "category":  None,
-    "note_type": None,
-    }
-
+LAST_CATEGORY = None
+LAST_NOTE_TYPE = None
+LAST_LEXER = None
 KEYCHARS = None
 
 
@@ -83,12 +81,12 @@ def get_available_keys() -> Set[str]:
 
 
 def get_params():
-    global PARAMS
-    if all(PARAMS.values()):
-        print(f"Last used\nCategory: {PARAMS['category']}\nNote_Type: {PARAMS['note_type']}")
+    global LAST_CATEGORY, LAST_NOTE_TYPE
+    if all([LAST_CATEGORY, LAST_NOTE_TYPE]):
+        print(f"Last used\nCategory: {LAST_CATEGORY}\nNote_Type: {LAST_NOTE_TYPE}")
         use_same = input("Use the same params? [y/n]")
         if use_same == "y":
-            return PARAMS
+            return {"category": LAST_CATEGORY, "note_type": LAST_NOTE_TYPE}
     # category
     categories = {i: NoteCategory(i) for i in range(len(NoteCategory))}
     for k, v in categories.items():
@@ -103,17 +101,17 @@ def get_params():
 
     user_type = int(input(f"Select note type [{min(note_types)}-{max(note_types)}]: "))
 
-    PARAMS['category'] = user_cat
-    PARAMS['note_type'] = user_type
-    return PARAMS
+    LAST_CATEGORY = user_cat
+    LAST_NOTE_TYPE = user_type
+    return {"category": LAST_CATEGORY, "note_type": LAST_NOTE_TYPE}
 
 
 def create_note(session):
     global KEYCHARS
     params = get_params()
-
     note_type = params['note_type']
     note_category = params['category']
+
 
 
     def validate_key(char) -> bool:
@@ -161,13 +159,15 @@ def create_note(session):
                 return None
 
     def handle_code_note():
+        global LAST_LEXER
         code_lexer = None
         while True:
-            cl = input(f"Lexer ? [Python]")
+            cl = input(f"Lexer ? [{LAST_LEXER if LAST_LEXER else 'Python'}]")
             if not cl:
-                code_lexer = 'Python'
+                cl = LAST_LEXER if LAST_LEXER else 'Python'
             try:
                 pygments.lexers.get_lexer_by_name(cl)
+                LAST_LEXER = cl
                 code_lexer = cl
                 break
             except ClassNotFound:
