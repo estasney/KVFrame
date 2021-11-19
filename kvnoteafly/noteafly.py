@@ -152,12 +152,17 @@ class NoteAFly(App):
 
     def paginate_note(self, *args, **kwargs):
         direction = kwargs.get('direction', 1)
+        is_initial = kwargs.get('initial', False)
         """Update `self.note_data` from `self.notes_data`"""
-        if direction > 0:
-            note = self.notes_data_categorical[self.note_idx.next()]
+        if is_initial:
+            self.note_data = self.notes_data_categorical[0]
         else:
-            note = self.notes_data_categorical[self.note_idx.previous()]
-        self.note_data = note
+            if direction > 0:
+                note = self.notes_data_categorical[self.note_idx.next()]
+            else:
+                note = self.notes_data_categorical[self.note_idx.previous()]
+            self.note_data = note
+
 
     def on_play_state(self, instance, value):
         if value == "pause":
@@ -183,7 +188,7 @@ class NoteAFly(App):
             else:
                 if self.play_state == 'play':
                     self.next_note_scheduler()
-            self.paginate_note()
+            self.paginate_note(initial=True)
             self.display_state = "display"
 
     def on_note_data(self, *args, **kwargs):
