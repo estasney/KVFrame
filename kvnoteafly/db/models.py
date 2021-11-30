@@ -1,9 +1,11 @@
+import logging
 import os
 from datetime import datetime
 from enum import Enum, IntEnum
 from pathlib import Path
 from typing import Optional, List
 from pygments.lexers import get_lexer_by_name
+from pygments.util import ClassNotFound
 
 from sqlalchemy import Column, Integer, create_engine, String, Enum as SQLEnum
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,7 +14,7 @@ from sqlalchemy.orm.collections import InstrumentedList
 from sqlalchemy_utils import database_exists, create_database
 
 Base = declarative_base()
-
+logger = logging.getLogger(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 db_path = f"sqlite:///{Path(basedir).as_posix()}/noteafly.db"
@@ -117,7 +119,7 @@ class Note(Base, DictMixin):
     text = Column(String(2048))
     category = Column(SQLEnum(NoteCategory))
     note_type = Column(SQLEnum(NoteType))
-    _code_lexer = Column(Integer, default=0)
+    _code_lexer = Column(Integer, default=None)
 
     @property
     def keys(self):
@@ -135,13 +137,18 @@ class Note(Base, DictMixin):
         self.keys_str = ",".join(kbd_keys)
 
     @property
-    def code_lexer(self) -> int:
+    def code_lexer(self) -> Optional[str]:
         return self._code_lexer
 
     @code_lexer.getter
     def code_lexer(self):
         if self._code_lexer:
-            return get_lexer_by_name(self._code_lexer)
+            try:
+                return get_lexer_by_name(self._code_lexer)
+            except ClassNotFound as e:
+                logger.exception(e)
+                return get_lexer_by_name("Python")
+
         return None
 
     @code_lexer.setter
