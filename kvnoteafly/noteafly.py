@@ -4,12 +4,12 @@ from functools import partial
 from dotenv import load_dotenv
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import (OptionProperty, ObjectProperty, ListProperty, StringProperty, DictProperty,
-                             NumericProperty)
+from kivy.properties import (DictProperty, ListProperty, NumericProperty, ObjectProperty, OptionProperty,
+                             StringProperty)
 from sqlalchemy import desc
 
 from custom.screens import NoteAppScreenManager
-from db import create_session, Note
+from db import Note, create_session
 
 
 class NoteIndex:
