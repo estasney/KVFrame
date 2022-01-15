@@ -1,3 +1,16 @@
+Raspberry Pi Config
+-------------------
+config.ini
+    ``[input]``
+    ``mtdev_%(name)s = probesysfs,provider=mtdev``
+    ``hid_%(name)s = probesysfs,provider=hidinput
+    ``fullscreen=1``
+
+
+
+
+
+
 reStructuredText Notes
 -----------------------
 
@@ -44,5 +57,3 @@ True   True   True
 .. image:: /home/eric/PycharmProjects/KVFrame/kvnoteafly/static/keys/0.png
 
 And
-
-
