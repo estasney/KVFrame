@@ -1,9 +1,9 @@
+import os
 from itertools import cycle
 
+from kivy.properties import ListProperty, ObjectProperty, StringProperty
+from kivy.uix.screenmanager import Screen, ScreenManager
 from toolz import sliding_window
-from kivy.app import App
-from kivy.properties import ObjectProperty, ListProperty, OptionProperty, StringProperty
-from kivy.uix.screenmanager import ScreenManager, Screen
 
 from utils import import_kv
 
@@ -18,14 +18,21 @@ class NoteAppScreenManager(ScreenManager):
     def __init__(self, app, **kwargs):
         super().__init__(**kwargs)
         self.current = 'chooser_screen'
-        self.note_screen_cycler = sliding_window(2, cycle([1, 2]))
+        self.note_screen_cycler = self.make_note_cycler()
         self.last_note_screen = None
         self.app = app
         self.app.bind(display_state=self.handle_app_display_state)
         self.app.bind(play_state=self.handle_app_play_state)
 
+    def make_note_cycler(self):
+        n_screens = 1 if os.environ.get("NO_TRANSITION", False) else 2
+        for i in range(n_screens):
+            note_screen = NoteCategoryScreen(name=f"note_screen{i}")
+            self.add_widget(note_screen)
+        return sliding_window(2, cycle(range(n_screens)))
+
     def category_selected(self, category):
-        App.get_running_app().note_category = category.text
+        self.app.note_category = category.text
 
     def handle_app_display_state(self, instance, new):
         if new == "choose":  # Show the Category Selection Screen
@@ -43,9 +50,11 @@ class NoteAppScreenManager(ScreenManager):
     def handle_notes(self, *args, **kwargs):
         last_active, next_active = next(self.note_screen_cycler)
         target = f"note_screen{next_active}"
-        self.ids[target].set_note_content(self.app.note_data)
-        self.current = target
+        target_screen = next(screen for screen in self.screens if screen.name == target)
+        target_screen.set_note_content(self.app.note_data)
         self.last_note_screen = next_active
+
+        self.current = target
 
     def handle_notes_list_view(self, *args, **kwargs):
         self.ids['list_view_screen'].set_note_list_view()

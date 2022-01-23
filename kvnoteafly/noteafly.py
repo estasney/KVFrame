@@ -1,4 +1,4 @@
-import threading
+import os
 from functools import partial
 
 from dotenv import load_dotenv
@@ -6,7 +6,8 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (DictProperty, ListProperty, NumericProperty, ObjectProperty, OptionProperty,
                              StringProperty)
-from sqlalchemy import desc
+from kivy.uix.screenmanager import NoTransition, SlideTransition
+from sqlalchemy import desc, select
 
 from custom.screens import NoteAppScreenManager
 from db import Note, create_session
@@ -54,18 +55,12 @@ class NoteAFly(App):
         session used for database
     note_idx
         Uses itertools `cycle` so that calling `next` will yield the next valid index
-    notes_data
-        All notes
     notes_data_categorical
-        All notes that are a Category == `self.note_category`
+        All notes as dict() that have a Category == `self.note_category`
     note_categories: ListProperty
-        List of all note categories
-    note_category: StringProperty
-        The Note category currently active
+        List of str of all note categories
     note_data: DictProperty
         Data regarding the currently displayed note
-    schedulers: DictProperty
-        Holds previously called schedulers
     display_state: OptionProperty
         One of [Display, Choose]
         Choose:: Display all known categories
@@ -82,7 +77,6 @@ class NoteAFly(App):
     db_session = None
 
     note_idx = None
-    notes_data = None
     notes_data_categorical = ListProperty()
     note_categories = ListProperty()
     note_category = StringProperty('')
@@ -104,25 +98,12 @@ class NoteAFly(App):
         "Accent2": (0.02352941176470591, 0.8392156862745098, 0.6274509803921572)
         })
 
-    def run_threaded(self, target_function, *args, **kwargs):
-        """Run a function in a separate thread"""
-        threading.Thread(target=target_function, args=args, kwargs=kwargs).start()
-
-    def _update_property(self, property_name, value):
-        """Intended for updating a property in a separate thread"""
-        setattr(self, property_name, value)
-
     def _setup_data(self):
         """Initial load of data"""
         self.db_session = create_session()
-        self.notes_data = [note.to_dict() for note in self.db_session.query(Note).order_by(Note.category, desc(Note.id)).all()]
+        category_query = select(Note.category.label("category")).distinct().order_by(Note.category)
 
-        # Remove duplicates, preserve order
-        seen = set()
-        seen_add = seen.add
-        self.note_categories = [note_dict['category'] for note_dict in self.notes_data if not (
-                note_dict['category'] in seen or seen_add(note_dict['category']))]
-        del seen, seen_add
+        self.note_categories = [row.category.name for row in self.db_session.execute(category_query).all()]
 
     def on_display_state(self, instance, new):
         if new != 'list':
@@ -136,7 +117,6 @@ class NoteAFly(App):
         self.note_idx = NoteIndex(len(self.notes_data_categorical), current=value)
         self.play_state = 'pause'
         self.display_state = 'display'
-
 
     def paginate(self, value):
         self.next_note_scheduler.cancel()
@@ -163,7 +143,6 @@ class NoteAFly(App):
                 note = self.notes_data_categorical[self.note_idx.previous()]
             self.note_data = note
 
-
     def on_play_state(self, instance, value):
         if value == "pause":
             self.next_note_scheduler.cancel()
@@ -178,8 +157,9 @@ class NoteAFly(App):
                 self.next_note_scheduler.cancel()
             self.display_state = "choose"
         else:
-            category_notes = filter(lambda note: note['category'] == value, self.notes_data)
-            self.notes_data_categorical = [{"idx": i, **note} for i, note in enumerate(category_notes)]
+            category_stmt = select(Note).filter(Note.category == value).order_by(desc(Note.id))
+            self.notes_data_categorical = [{"idx": i, **row.Note.to_dict()}
+                                           for i, row in enumerate(self.db_session.execute(category_stmt).all())]
             self.note_idx = NoteIndex(len(self.notes_data_categorical))
             if not self.next_note_scheduler:
                 self.next_note_scheduler = Clock.schedule_interval(self.paginate_note, self.paginate_interval)
@@ -196,7 +176,7 @@ class NoteAFly(App):
 
     def build(self):
         self._setup_data()
-        sm = NoteAppScreenManager(self)
+        sm = NoteAppScreenManager(self, transition=NoTransition() if os.environ.get("NO_TRANSITION", False) else SlideTransition())
         self.screen_manager = sm
         return sm
 
