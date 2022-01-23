@@ -63,7 +63,6 @@ class PlayStateButton(DynamicImageButton):
     current_source = StringProperty()
 
     def __init__(self, *args, **kwargs):
-        App.get_running_app().bind(play_state=self.setter("current_source"))
         super().__init__(
             current_source="play",
             sources={
@@ -76,8 +75,10 @@ class PlayStateButton(DynamicImageButton):
         app = App.get_running_app()
         if app.play_state == "play":
             app.play_state = "pause"
+            self.current_source = "pause"
         else:
             app.play_state = "play"
+            self.current_source = "play"
 
     def on_current_source(self, old, new):
         self.source = self.sources[new]
