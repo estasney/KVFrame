@@ -22,7 +22,7 @@
     PlayStateButton:
         color: [1, 1, 1, 1] if self.current_source == 'play' else [0.86666, 0.247, 0.0627, 1]
         opacity: 1 if self.state == 'normal' else 0.6
-        on_release: self.app.toggle_play_state()
+        on_release: self.toggle_play_state()
         mipmap: True
     VSeparator:
     ForwardButton:

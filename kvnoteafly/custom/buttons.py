@@ -33,11 +33,7 @@ class GreenButton(RoundedButton):
     FONT_COLOR = StringProperty(get_color_from_hex("#000000"))
 
 
-
-
-
 class ImageButton(ButtonBehavior, Image):
-
     def __init__(self, src, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.source = src
@@ -65,39 +61,43 @@ class DynamicImageButton(ButtonBehavior, Image):
 class PlayStateButton(DynamicImageButton):
     sources = DictProperty()
     current_source = StringProperty()
-    app = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
-        self.app = App.get_running_app()
-        self.app.bind(play_state=self.setter('current_source'))
-        super().__init__(current_source="play",
-                         sources={
-                             "play":  "atlas://static/icons/button_bar/play",
-                             "pause": "atlas://static/icons/button_bar/pause"
-                             })
+        App.get_running_app().bind(play_state=self.setter("current_source"))
+        super().__init__(
+            current_source="play",
+            sources={
+                "play": "atlas://static/icons/button_bar/play",
+                "pause": "atlas://static/icons/button_bar/pause",
+            },
+        )
+
+    def toggle_play_state(self):
+        app = App.get_running_app()
+        if app.play_state == "play":
+            app.play_state = "pause"
+        else:
+            app.play_state = "play"
 
     def on_current_source(self, old, new):
         self.source = self.sources[new]
 
 
 class BackButton(ImageButton):
-
     def __init__(self, *args, **kwargs):
         super().__init__(src="atlas://static/icons/button_bar/back")
 
 
 class ForwardButton(ImageButton):
-
     def __init__(self, *args, **kwargs):
         super().__init__(src="atlas://static/icons/button_bar/forward")
 
 
 class ReturnButton(ImageButton):
-
     def __init__(self, *args, **kwargs):
         super().__init__(src="atlas://static/icons/button_bar/back_arrow")
 
-class ListViewButton(ImageButton):
 
+class ListViewButton(ImageButton):
     def __init__(self, *args, **kwargs):
         super().__init__(src="atlas://static/icons/button_bar/list_view")
