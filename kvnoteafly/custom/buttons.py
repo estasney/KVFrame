@@ -1,7 +1,8 @@
 import os
 
 from kivy.app import App
-from kivy.properties import StringProperty, DictProperty, ObjectProperty
+from kivy.properties import (BooleanProperty, Clock, ColorProperty, ListProperty, StringProperty, DictProperty,
+                             ObjectProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -44,14 +45,15 @@ class ImageButton(ButtonBehavior, Image):
 
 
 class DynamicImageButton(ButtonBehavior, Image):
-    sources = DictProperty()
-    current_source = StringProperty()
+    sources = ListProperty([])
 
-    def __init__(self, current_source: str, sources: dict, *args, **kwargs):
+    def __init__(self, sources: list[str], **kwargs):
+        super().__init__(**kwargs)
         self.sources = sources
-        self.current_source = current_source
-        self.source = self.sources[self.current_source]
-        super().__init__()
+        if 'source' in kwargs:
+            self.source = kwargs.pop('source')
+        else:
+            self.source = self.sources[0]
 
     def collide_point(self, x, y):
         distance = Vector(x, y).distance(self.center)
@@ -59,29 +61,31 @@ class DynamicImageButton(ButtonBehavior, Image):
 
 
 class PlayStateButton(DynamicImageButton):
-    sources = DictProperty()
-    current_source = StringProperty()
+    sources = ListProperty([])
+    playing = BooleanProperty(True)
+    color = ColorProperty([1, 1, 1, 1])
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(
-            current_source="play",
-            sources={
-                "play": "atlas://static/icons/button_bar/play",
-                "pause": "atlas://static/icons/button_bar/pause",
-            },
-        )
+                source="atlas://static/icons/button_bar/play",
+                sources=["atlas://static/icons/button_bar/play", "atlas://static/icons/button_bar/pause"],
+                **kwargs
+                )
+        App.get_running_app().bind()
 
     def toggle_play_state(self):
         app = App.get_running_app()
-        if app.play_state == "play":
-            app.play_state = "pause"
-            self.current_source = "pause"
+        is_playing = app.play_state == "play"
+        if is_playing:
+            task = lambda x: setattr(App.get_running_app(), "play_state", "pause")
         else:
-            app.play_state = "play"
-            self.current_source = "play"
+            task = lambda x: setattr(App.get_running_app(), "play_state", "play")
+        Clock.schedule_once(task, 0.1)
 
-    def on_current_source(self, old, new):
-        self.source = self.sources[new]
+    def on_playing(self, old, new):
+        self.source = self.sources[0] if new else self.sources[1]
+        self.color = [1, 1, 1, 1] if new else [0.86666, 0.247, 0.0627, 1]
+
 
 
 class BackButton(ImageButton):

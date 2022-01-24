@@ -63,6 +63,7 @@ class NoteContent(BoxLayout):
 class NoteTitle(BoxLayout):
     title_text = StringProperty()
     play_state = StringProperty()
+    button_bar = ObjectProperty()
     play_state_button = ObjectProperty()
 
     def __init__(self, **kwargs):

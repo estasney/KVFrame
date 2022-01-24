@@ -11,7 +11,6 @@ import_kv(__file__)
 
 
 class NoteAppScreenManager(ScreenManager):
-
     app = ObjectProperty()
     play_state = StringProperty()
 
@@ -46,6 +45,10 @@ class NoteAppScreenManager(ScreenManager):
 
     def handle_app_play_state(self, instance, value):
         self.play_state = value
+        for screen in self.screens:
+            if screen.name.startswith("note_screen"):
+                screen.current_note.note_title.button_bar.play_button.playing = value == "play"
+
 
     def handle_notes(self, *args, **kwargs):
         last_active, next_active = next(self.note_screen_cycler)
@@ -77,6 +80,7 @@ class NoteCategoryScreen(Screen):
 
     def set_note_content(self, note_data: dict):
         self.current_note.set_note_content(note_data)
+
 
 class NoteListViewScreen(Screen):
     child_object = ObjectProperty()
